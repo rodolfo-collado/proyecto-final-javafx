@@ -1,4 +1,4 @@
-package com.practice.proyectofinaljavafx.model;
+package com.practice.aulaequilibrio.model;
 
 import jakarta.persistence.*;
 
