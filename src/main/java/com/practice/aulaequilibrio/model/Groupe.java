@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "grupo")
-public class Grupo {
+public class Groupe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,7 @@ public class Grupo {
     @Column(name = "cantidad_estudiantes", nullable = false)
     private Integer cantidadEstudiantes;
 
-    public Grupo() {
+    public Groupe() {
     }
 
     public Integer getId() {
