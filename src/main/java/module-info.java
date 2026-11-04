@@ -9,6 +9,7 @@ module com.practice.aulaequilibrio {
     requires org.postgresql.jdbc;
     requires io.github.cdimascio.dotenv.java;
 
+    opens com.practice.aulaequilibrio.model to org.hibernate.orm.core;
     opens com.practice.aulaequilibrio.controller to javafx.fxml;
     exports com.practice.aulaequilibrio;
 }

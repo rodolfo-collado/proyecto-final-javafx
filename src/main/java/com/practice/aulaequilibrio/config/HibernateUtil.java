@@ -1,5 +1,6 @@
 package com.practice.aulaequilibrio.config;
 
+import com.practice.aulaequilibrio.model.Teacher;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -43,11 +44,12 @@ public final class HibernateUtil {
                                 "jakarta.persistence.jdbc.password",
                                 required(dotenv, "DB_PASSWORD")
                         )
-                        .applySetting("hibernate.hbm2ddl.auto", "none")
+                        .applySetting("hibernate.hbm2ddl.auto", "update")
                         .build();
 
         try {
             return new MetadataSources(registry)
+                    .addAnnotatedClass(Teacher.class)
                     .buildMetadata()
                     .buildSessionFactory();
         } catch (RuntimeException exception) {
