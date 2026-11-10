@@ -1,16 +1,20 @@
-# Aula Equilibrio — docentes y disponibilidad
+# Aula Equilibrio
 
-Implementación en `rodolfo-ramirez`, sobre `develop`. Reutiliza `Teacher` sin modificarlo y la configuración PostgreSQL de `HibernateUtil`. El ZIP se usó como referencia; no se incorporaron sus otros módulos ni su historial Git.
+Aplicación JavaFX con persistencia en PostgreSQL mediante Hibernate. La pantalla principal conecta los catálogos de docentes y disponibilidad, grupos, asignaturas y aulas. El módulo Horarios se abre desde Inicio.
 
 ## Ejecutar
 
 Se requiere JDK 21 y PostgreSQL. Copia `.env.example` a `.env` y configura `DB_URL`, `DB_USER` y `DB_PASSWORD` para una base existente. El usuario de la base debe poder crear/actualizar tablas, como requiere la configuración Hibernate existente.
 
+Si tu base ya contiene aulas de una versión anterior, ejecuta primero `sql/rolando_aulas.sql` en esa base. El script asigna el tipo **General** a las aulas existentes que todavía no tienen tipo y conserva sus datos.
+
 ```bash
 ./mvnw javafx:run
 ```
 
-La pestaña **Docentes y disponibilidad** contiene dos catálogos. La navegación también conserva Inicio, Grupos y Asignaturas, y el acceso a Horarios desde Inicio. Usa **Nuevo** para limpiar la selección, **Guardar** para crear o actualizar y selecciona una fila para editarla. La eliminación requiere confirmación.
+En **Aulas**, crea primero un tipo de aula y luego registra un aula con ese tipo. Al volver a **Inicio → Horarios**, el aula aparecerá entre las opciones de una asignación.
+
+En **Docentes y disponibilidad**, usa **Nuevo** para limpiar la selección y **Guardar** para crear o actualizar. Selecciona una fila para editarla. La eliminación requiere confirmación.
 
 - El nombre es obligatorio y admite hasta 120 caracteres. El correo es opcional y único.
 - Cada bloque exige un docente existente, un día de lunes a domingo y un número entero mayor que cero. No se impone un máximo de bloques porque el requisito no lo define.

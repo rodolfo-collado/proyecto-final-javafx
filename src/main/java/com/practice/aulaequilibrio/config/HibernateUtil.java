@@ -1,6 +1,7 @@
 package com.practice.aulaequilibrio.config;
 
 import com.practice.aulaequilibrio.model.Classroom;
+import com.practice.aulaequilibrio.model.ClassroomType;
 import com.practice.aulaequilibrio.model.Groupe;
 import com.practice.aulaequilibrio.model.Availability;
 import com.practice.aulaequilibrio.model.ScheduleAssignment;
@@ -59,6 +60,7 @@ public final class HibernateUtil {
                     .addAnnotatedClass(Availability.class)
                     .addAnnotatedClass(Groupe.class)
                     .addAnnotatedClass(Classroom.class)
+                    .addAnnotatedClass(ClassroomType.class)
                     .addAnnotatedClass(Subject.class)
                     .addAnnotatedClass(ScheduleVersion.class)
                     .addAnnotatedClass(ScheduleAssignment.class)

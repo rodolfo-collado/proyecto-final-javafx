@@ -30,4 +30,7 @@
     <Tab text="Asignaturas">
         <fx:include source="subject-view.fxml"/>
     </Tab>
+    <Tab text="Aulas">
+        <fx:include source="classroom-view.fxml"/>
+    </Tab>
 </TabPane>
