@@ -13,8 +13,14 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.practice.aulaequilibrio.controller.GroupeController">
     <padding>
-        <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
+        <Insets bottom="20" left="22" right="22" top="18"/>
     </padding>
+
+    <top>
+        <Label text="Grupos" styleClass="page-title">
+            <BorderPane.margin><Insets bottom="14"/></BorderPane.margin>
+        </Label>
+    </top>
 
     <center>
         <TableView fx:id="table">
@@ -29,11 +35,9 @@
     </center>
 
     <right>
-        <VBox spacing="8.0" prefWidth="260.0">
-            <padding>
-                <Insets left="12.0"/>
-            </padding>
-            <Label fx:id="formTitle" text="Nuevo grupo" style="-fx-font-weight: bold;"/>
+        <VBox spacing="9" prefWidth="286" styleClass="panel">
+            <BorderPane.margin><Insets left="14"/></BorderPane.margin>
+            <Label fx:id="formTitle" text="Nuevo grupo" styleClass="card-title"/>
             <Label text="Nombre *"/>
             <TextField fx:id="nombreField" promptText="Ej. 1A"/>
             <Label text="Cantidad de estudiantes *"/>
@@ -41,7 +45,7 @@
             <HBox spacing="8.0">
                 <Button text="Guardar" defaultButton="true" onAction="#save"/>
                 <Button text="Nuevo" onAction="#clearForm"/>
-                <Button fx:id="deleteButton" text="Eliminar" onAction="#delete"/>
+                <Button fx:id="deleteButton" text="Eliminar" onAction="#delete" styleClass="danger"/>
             </HBox>
             <Button text="Actualizar lista" onAction="#refresh"/>
         </VBox>

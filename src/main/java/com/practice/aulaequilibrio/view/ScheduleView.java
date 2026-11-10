@@ -9,6 +9,7 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -26,6 +27,8 @@ import java.util.function.Function;
 
 public class ScheduleView extends BorderPane {
     private static final System.Logger LOGGER = System.getLogger(ScheduleView.class.getName());
+    private static final String STYLESHEET = ScheduleView.class.getResource(
+            "/com/practice/aulaequilibrio/styles/aula.css").toExternalForm();
     private static final Option ALL_GROUPS = new Option(null, "Todos los grupos");
     private static final ButtonType SAVE = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
 
@@ -36,7 +39,9 @@ public class ScheduleView extends BorderPane {
     private final Label message = new Label();
 
     public ScheduleView() {
-        setPadding(new Insets(16));
+        getStylesheets().add(STYLESHEET);
+        getStyleClass().add("schedule-page");
+        setPadding(new Insets(20));
         versions.setPromptText("Elige una versión");
         versions.setConverter(display(version -> version.getName() + " · " + version.getCreatedOn()));
         versions.setPrefWidth(280);
@@ -44,13 +49,22 @@ public class ScheduleView extends BorderPane {
 
         Button editVersion = button("Renombrar", () -> versionDialog(versions.getValue()));
         Button deleteVersion = button("Eliminar versión", this::deleteVersion);
+        deleteVersion.getStyleClass().add("danger");
+        Button newVersion = button("Nueva versión", () -> versionDialog(null));
+        newVersion.getStyleClass().add("primary");
         editVersion.disableProperty().bind(versions.valueProperty().isNull());
         deleteVersion.disableProperty().bind(versions.valueProperty().isNull());
         HBox versionBar = new HBox(8, new Label("Versión"), versions,
-                button("Nueva versión", () -> versionDialog(null)), editVersion, deleteVersion);
+                newVersion, editVersion, deleteVersion);
+        versionBar.setAlignment(Pos.CENTER_LEFT);
         HBox filterBar = new HBox(8, new Label("Grupo"), groups,
                 button("Actualizar", () -> reload(selectedVersionId())));
-        setTop(new VBox(12, versionBar, filterBar));
+        filterBar.setAlignment(Pos.CENTER_LEFT);
+        Label title = new Label("Horarios");
+        title.getStyleClass().add("page-title");
+        VBox filters = new VBox(9, versionBar, filterBar);
+        filters.getStyleClass().add("panel");
+        setTop(new VBox(12, title, filters));
 
         table.getColumns().add(column("Día", a -> dayLabel(DayOfWeek.of(a.getDay()))));
         table.getColumns().add(column("Bloque", a -> String.valueOf(a.getBlock())));
@@ -66,6 +80,8 @@ public class ScheduleView extends BorderPane {
         Button add = button("Nueva asignación", () -> assignmentDialog(null));
         Button edit = button("Editar asignación", () -> assignmentDialog(table.getSelectionModel().getSelectedItem()));
         Button delete = button("Eliminar asignación", this::deleteAssignment);
+        add.getStyleClass().add("primary");
+        delete.getStyleClass().add("danger");
         add.disableProperty().bind(versions.valueProperty().isNull());
         edit.disableProperty().bind(table.getSelectionModel().selectedItemProperty().isNull());
         delete.disableProperty().bind(table.getSelectionModel().selectedItemProperty().isNull());
@@ -189,10 +205,11 @@ public class ScheduleView extends BorderPane {
         dialog.setTitle(title);
         Label error = new Label();
         error.setWrapText(true);
-        error.setStyle("-fx-text-fill: firebrick;");
+        error.getStyleClass().add("field-error");
         VBox content = new VBox(10, fields, error);
         content.setPrefWidth(360);
         dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getStylesheets().add(STYLESHEET);
         dialog.getDialogPane().getButtonTypes().setAll(SAVE, ButtonType.CANCEL);
         dialog.getDialogPane().lookupButton(SAVE).addEventFilter(ActionEvent.ACTION, event -> {
             try {
@@ -208,6 +225,7 @@ public class ScheduleView extends BorderPane {
     private boolean confirm(String question) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, question, ButtonType.OK, ButtonType.CANCEL);
         alert.initOwner(getScene().getWindow());
+        alert.getDialogPane().getStylesheets().add(STYLESHEET);
         return alert.showAndWait().filter(ButtonType.OK::equals).isPresent();
     }
 
