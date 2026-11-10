@@ -14,6 +14,10 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+
 public final class HibernateUtil {
 
     private static SessionFactory sessionFactory;
@@ -97,6 +101,18 @@ public final class HibernateUtil {
                     }
                 })
         );
+    }
+
+    public static void loadDemoData() {
+        try (var script = HibernateUtil.class.getResourceAsStream("/sql/demo_seed.sql")) {
+            if (script == null) {
+                throw new IllegalStateException("No se encontró la semilla de demostración.");
+            }
+            String sql = new String(script.readAllBytes(), StandardCharsets.UTF_8);
+            getSessionFactory().inTransaction(session -> session.createNativeMutationQuery(sql).executeUpdate());
+        } catch (IOException exception) {
+            throw new UncheckedIOException("No se pudo leer la semilla de demostración.", exception);
+        }
     }
 
     public static synchronized void shutdown() {

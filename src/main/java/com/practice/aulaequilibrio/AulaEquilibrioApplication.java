@@ -13,6 +13,7 @@ public class AulaEquilibrioApplication extends Application {
     public void init() {
         try {
             HibernateUtil.verifyConnection();
+            HibernateUtil.loadDemoData();
         } catch (RuntimeException exception) {
             HibernateUtil.shutdown();
             throw exception;
