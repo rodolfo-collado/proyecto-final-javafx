@@ -30,8 +30,8 @@ class CatalogScreenTest {
         try (var factory = CatalogDAOTest.createFactory("screen_" + System.nanoTime())) {
             var dao = new CatalogDAO(factory);
             Stage stage = fx(() -> {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/practice/aulaequilibrio/views/home-view.fxml"));
-                loader.setControllerFactory(type -> new HomeController(dao));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/practice/aulaequilibrio/views/catalog-view.fxml"));
+                loader.setControllerFactory(type -> new CatalogController(dao));
                 root = loader.load();
                 Stage window = new Stage();
                 window.setScene(new Scene(root, 1040, 740));

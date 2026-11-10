@@ -10,7 +10,7 @@ Se requiere JDK 21 y PostgreSQL. Copia `.env.example` a `.env` y configura `DB_U
 ./mvnw javafx:run
 ```
 
-La ventana contiene dos catálogos. Usa **Nuevo** para limpiar la selección, **Guardar** para crear o actualizar y selecciona una fila para editarla. La eliminación requiere confirmación.
+La pestaña **Docentes y disponibilidad** contiene dos catálogos. La navegación también conserva Inicio, Grupos y Asignaturas, y el acceso a Horarios desde Inicio. Usa **Nuevo** para limpiar la selección, **Guardar** para crear o actualizar y selecciona una fila para editarla. La eliminación requiere confirmación.
 
 - El nombre es obligatorio y admite hasta 120 caracteres. El correo es opcional y único.
 - Cada bloque exige un docente existente, un día de lunes a domingo y un número entero mayor que cero. No se impone un máximo de bloques porque el requisito no lo define.

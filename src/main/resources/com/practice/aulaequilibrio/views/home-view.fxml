@@ -1,64 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.practice.aulaequilibrio.controller.HomeController" spacing="12">
-    <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
-    <Label text="Aula Equilibrio · Docentes y disponibilidad" style="-fx-font-size: 22; -fx-font-weight: bold;"/>
-    <VBox fx:id="catalogs" spacing="12" VBox.vgrow="ALWAYS">
-        <HBox spacing="12" VBox.vgrow="ALWAYS">
-            <VBox spacing="10" HBox.hgrow="ALWAYS" prefWidth="420">
-                <Label text="Docentes" style="-fx-font-size: 18;"/>
-                <TableView fx:id="teachers" VBox.vgrow="ALWAYS" prefHeight="300">
-                    <placeholder><Label text="No hay docentes registrados."/></placeholder>
-                    <columns>
-                        <TableColumn fx:id="teacherId" text="ID" prefWidth="50"/>
-                        <TableColumn fx:id="teacherName" text="Nombre" prefWidth="180"/>
-                        <TableColumn fx:id="teacherEmail" text="Correo" prefWidth="180"/>
-                    </columns>
-                </TableView>
-                <Label text="Selecciona una fila para editar o pulsa Nuevo."/>
-                <Label text="Nombre obligatorio (máximo 120 caracteres)"/>
-                <TextField fx:id="name" promptText="Nombre del docente"/>
-                <Label text="Correo opcional"/>
-                <TextField fx:id="email" promptText="Correo del docente"/>
-                <HBox spacing="8">
-                    <Button text="Nuevo" onAction="#newTeacher"/>
-                    <Button text="Guardar docente" onAction="#saveTeacher"/>
-                    <Button text="Eliminar docente" onAction="#deleteTeacher"/>
-                </HBox>
-            </VBox>
-            <Separator orientation="VERTICAL"/>
-            <VBox spacing="10" HBox.hgrow="ALWAYS" prefWidth="470">
-                <Label text="Bloques de disponibilidad" style="-fx-font-size: 18;"/>
-                <TableView fx:id="blocks" VBox.vgrow="ALWAYS" prefHeight="300">
-                    <placeholder><Label text="No hay bloques para esta consulta."/></placeholder>
-                    <columns>
-                        <TableColumn fx:id="blockId" text="ID" prefWidth="50"/>
-                        <TableColumn fx:id="blockOwner" text="Docente" prefWidth="190"/>
-                        <TableColumn fx:id="blockDay" text="Día" prefWidth="110"/>
-                        <TableColumn fx:id="blockValue" text="Bloque" prefWidth="70"/>
-                    </columns>
-                </TableView>
-                <Label text="Selecciona una fila para editar o pulsa Nuevo."/>
-                <ComboBox fx:id="blockTeacher" promptText="Docente existente" maxWidth="Infinity"/>
-                <ComboBox fx:id="day" promptText="Día de la semana" maxWidth="Infinity"/>
-                <TextField fx:id="blockNumber" promptText="Número de bloque (entero mayor que cero)"/>
-                <HBox spacing="8">
-                    <Button text="Nuevo" onAction="#newBlock"/>
-                    <Button text="Guardar bloque" onAction="#saveBlock"/>
-                    <Button text="Eliminar bloque" onAction="#deleteBlock"/>
-                </HBox>
-            </VBox>
-        </HBox>
-        <Separator/>
-        <Label text="Consulta HQL de disponibilidad por docente" style="-fx-font-weight: bold;"/>
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <ComboBox fx:id="filterTeacher" promptText="Selecciona un docente" prefWidth="280"/>
-            <Button text="Consultar" onAction="#filter"/>
-            <Button text="Ver todos" onAction="#showAll"/>
-            <Button text="Actualizar" onAction="#reload"/>
-        </HBox>
-    </VBox>
-    <Label fx:id="status" text="Cargando catálogos…" wrapText="true"/>
-</VBox>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.VBox?>
+
+<TabPane xmlns:fx="http://javafx.com/fxml"
+         fx:controller="com.practice.aulaequilibrio.controller.HomeController"
+         tabClosingPolicy="UNAVAILABLE">
+    <Tab text="Inicio">
+        <VBox alignment="CENTER" spacing="20.0">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+
+            <Label fx:id="welcomeMessage"/>
+            <Button text="Bienvenido" onAction="#showWelcomeMessage"/>
+            <Button text="Horarios" onAction="#openSchedules"/>
+        </VBox>
+    </Tab>
+    <Tab text="Docentes y disponibilidad">
+        <fx:include source="catalog-view.fxml"/>
+    </Tab>
+    <Tab text="Grupos">
+        <fx:include source="groupe-view.fxml"/>
+    </Tab>
+    <Tab text="Asignaturas">
+        <fx:include source="subject-view.fxml"/>
+    </Tab>
+</TabPane>
