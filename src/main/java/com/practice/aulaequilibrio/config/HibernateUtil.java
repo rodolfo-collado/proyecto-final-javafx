@@ -1,6 +1,10 @@
 package com.practice.aulaequilibrio.config;
 
+import com.practice.aulaequilibrio.model.Classroom;
 import com.practice.aulaequilibrio.model.Groupe;
+import com.practice.aulaequilibrio.model.ScheduleAssignment;
+import com.practice.aulaequilibrio.model.ScheduleVersion;
+import com.practice.aulaequilibrio.model.Subject;
 import com.practice.aulaequilibrio.model.Teacher;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.hibernate.SessionFactory;
@@ -52,6 +56,10 @@ public final class HibernateUtil {
             return new MetadataSources(registry)
                     .addAnnotatedClass(Teacher.class)
                     .addAnnotatedClass(Groupe.class)
+                    .addAnnotatedClass(Classroom.class)
+                    .addAnnotatedClass(Subject.class)
+                    .addAnnotatedClass(ScheduleVersion.class)
+                    .addAnnotatedClass(ScheduleAssignment.class)
                     .buildMetadata()
                     .buildSessionFactory();
         } catch (RuntimeException exception) {
