@@ -12,6 +12,12 @@ Si tu base ya contiene aulas de una versión anterior, ejecuta primero `sql/rola
 ./mvnw javafx:run
 ```
 
+## Cargar datos de demostración
+
+Inicia la aplicación una vez para que Hibernate cree las ocho tablas. Cierra la ventana y ejecuta `sql/demo_seed.sql` en la misma base de PostgreSQL desde pgAdmin o con `psql -v ON_ERROR_STOP=1 -d aulaequilibrio -f sql/demo_seed.sql`. Usa tu conexión local.
+
+La semilla agrega tres docentes, tres grupos, tres asignaturas, tres aulas y un horario con seis asignaciones. Puedes repetirla sin duplicar los datos ni reemplazar registros existentes. Abre **Inicio → Abrir horarios** y selecciona **Demo · Semana académica** para probar el filtro por grupo.
+
 En **Aulas**, crea primero un tipo de aula y luego registra un aula con ese tipo. Al volver a **Inicio → Horarios**, el aula aparecerá entre las opciones de una asignación.
 
 En **Docentes y disponibilidad**, usa **Nuevo** para limpiar la selección y **Guardar** para crear o actualizar. Selecciona una fila para editarla. La eliminación requiere confirmación.
