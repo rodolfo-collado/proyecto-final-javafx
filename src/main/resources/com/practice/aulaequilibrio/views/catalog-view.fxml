@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="com.practice.aulaequilibrio.controller.CatalogController" spacing="12">
+    <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
+    <Label text="Docentes y disponibilidad" styleClass="page-title"/>
+    <VBox fx:id="catalogs" spacing="12" VBox.vgrow="ALWAYS">
+        <HBox spacing="12" VBox.vgrow="ALWAYS">
+            <VBox spacing="8" HBox.hgrow="ALWAYS" prefWidth="450" styleClass="panel">
+                <Label text="Docentes" styleClass="card-title"/>
+                <TableView fx:id="teachers" VBox.vgrow="ALWAYS" prefHeight="300">
+                    <placeholder><Label text="No hay docentes registrados."/></placeholder>
+                    <columns>
+                        <TableColumn fx:id="teacherId" text="ID" prefWidth="50"/>
+                        <TableColumn fx:id="teacherName" text="Nombre" prefWidth="180"/>
+                        <TableColumn fx:id="teacherEmail" text="Correo" prefWidth="180"/>
+                    </columns>
+                </TableView>
+                <Label text="Nombre obligatorio (máximo 120 caracteres)" styleClass="muted"/>
+                <TextField fx:id="name" promptText="Nombre del docente"/>
+                <Label text="Correo opcional"/>
+                <TextField fx:id="email" promptText="Correo del docente"/>
+                <HBox spacing="8">
+                    <Button text="Nuevo" onAction="#newTeacher"/>
+                    <Button text="Guardar docente" onAction="#saveTeacher" styleClass="primary"/>
+                    <Button text="Eliminar docente" onAction="#deleteTeacher" styleClass="danger"/>
+                </HBox>
+            </VBox>
+            <VBox spacing="8" HBox.hgrow="ALWAYS" prefWidth="450" styleClass="panel">
+                <Label text="Bloques de disponibilidad" styleClass="card-title"/>
+                <TableView fx:id="blocks" VBox.vgrow="ALWAYS" prefHeight="300">
+                    <placeholder><Label text="No hay bloques para esta consulta."/></placeholder>
+                    <columns>
+                        <TableColumn fx:id="blockId" text="ID" prefWidth="50"/>
+                        <TableColumn fx:id="blockOwner" text="Docente" prefWidth="190"/>
+                        <TableColumn fx:id="blockDay" text="Día" prefWidth="110"/>
+                        <TableColumn fx:id="blockValue" text="Bloque" prefWidth="70"/>
+                    </columns>
+                </TableView>
+                <ComboBox fx:id="blockTeacher" promptText="Docente existente" maxWidth="Infinity"/>
+                <ComboBox fx:id="day" promptText="Día de la semana" maxWidth="Infinity"/>
+                <TextField fx:id="blockNumber" promptText="Número de bloque (entero mayor que cero)"/>
+                <HBox spacing="8">
+                    <Button text="Nuevo" onAction="#newBlock"/>
+                    <Button text="Guardar bloque" onAction="#saveBlock" styleClass="primary"/>
+                    <Button text="Eliminar bloque" onAction="#deleteBlock" styleClass="danger"/>
+                </HBox>
+            </VBox>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="panel">
+            <Label text="Disponibilidad por docente" styleClass="card-title"/>
+            <ComboBox fx:id="filterTeacher" promptText="Selecciona un docente" prefWidth="280"/>
+            <Button text="Consultar" onAction="#filter" styleClass="primary"/>
+            <Button text="Ver todos" onAction="#showAll"/>
+            <Button text="Actualizar" onAction="#reload"/>
+        </HBox>
+    </VBox>
+    <Label fx:id="status" text="Cargando catálogos…" wrapText="true" styleClass="muted"/>
+</VBox>
