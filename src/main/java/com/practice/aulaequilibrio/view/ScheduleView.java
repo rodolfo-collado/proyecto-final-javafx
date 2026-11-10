@@ -55,7 +55,7 @@ public class ScheduleView extends BorderPane {
         table.getColumns().add(column("Día", a -> dayLabel(DayOfWeek.of(a.getDay()))));
         table.getColumns().add(column("Bloque", a -> String.valueOf(a.getBlock())));
         table.getColumns().add(column("Grupo", a -> a.getGroup().getNombre()));
-        table.getColumns().add(column("Asignatura", a -> a.getSubject().getName()));
+        table.getColumns().add(column("Asignatura", a -> a.getSubject().getNombre()));
         table.getColumns().add(column("Docente", a -> a.getTeacher().getName()));
         table.getColumns().add(column("Aula", a -> a.getClassroom().getCodigo()));
         table.setPlaceholder(new Label("No hay asignaciones para esta selección."));

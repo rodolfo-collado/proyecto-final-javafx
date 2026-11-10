@@ -3,46 +3,55 @@ package com.practice.aulaequilibrio.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "subject")
+@Table(name = "asignatura")
 public class Subject {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, unique = true, length = 20)
-    private String code;
+    private String codigo;
 
-    @Column(nullable = false, length = 120)
-    private String name;
+    @Column(nullable = false, length = 100)
+    private String nombre;
 
-    @Column(name = "required_sessions", nullable = false)
-    private int requiredSessions;
+    @Column(name = "sesiones_requeridas", nullable = false)
+    private Integer sesionesRequeridas;
+
+    public Subject() {
+    }
 
     public Integer getId() {
         return id;
     }
 
-    public String getCode() {
-        return code;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
-    public String getName() {
-        return name;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public int getRequiredSessions() {
-        return requiredSessions;
+    public Integer getSesionesRequeridas() {
+        return sesionesRequeridas;
     }
 
-    public void setRequiredSessions(int requiredSessions) {
-        this.requiredSessions = requiredSessions;
+    public void setSesionesRequeridas(Integer sesionesRequeridas) {
+        this.sesionesRequeridas = sesionesRequeridas;
+    }
+
+    @Override
+    public String toString() {
+        return codigo + " - " + nombre;
     }
 }

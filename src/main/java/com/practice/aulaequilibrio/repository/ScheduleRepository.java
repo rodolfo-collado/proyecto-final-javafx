@@ -91,7 +91,7 @@ public class ScheduleRepository {
     public Catalogs listCatalogs() {
         return HibernateUtil.getSessionFactory().fromTransaction(session -> new Catalogs(
                 options(session, "select id, nombre from Groupe order by nombre"),
-                options(session, "select id, name from Subject order by name, code"),
+                options(session, "select id, nombre from Subject order by nombre, codigo"),
                 options(session, "select id, name from Teacher order by name, id"),
                 options(session, "select id, codigo from Classroom order by codigo")));
     }
