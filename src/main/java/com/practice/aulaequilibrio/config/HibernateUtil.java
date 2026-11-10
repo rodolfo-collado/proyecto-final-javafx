@@ -1,6 +1,7 @@
 package com.practice.aulaequilibrio.config;
 
 import com.practice.aulaequilibrio.model.Groupe;
+import com.practice.aulaequilibrio.model.Availability;
 import com.practice.aulaequilibrio.model.Teacher;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.hibernate.SessionFactory;
@@ -51,6 +52,7 @@ public final class HibernateUtil {
         try {
             return new MetadataSources(registry)
                     .addAnnotatedClass(Teacher.class)
+                    .addAnnotatedClass(Availability.class)
                     .addAnnotatedClass(Groupe.class)
                     .buildMetadata()
                     .buildSessionFactory();

@@ -22,8 +22,10 @@ public class AulaEquilibrioApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(AulaEquilibrioApplication.class.getResource("views/home-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        Scene scene = new Scene(fxmlLoader.load(), 1040, 740);
         stage.setTitle("Aula Equilibrio");
+        stage.setMinWidth(1000);
+        stage.setMinHeight(720);
         stage.setScene(scene);
         stage.show();
     }
