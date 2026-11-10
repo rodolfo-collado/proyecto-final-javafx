@@ -1,10 +1,10 @@
-package com.practice.aulaequilibrio.model;
+package ni.edu.uam.model;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "classroom")
-public class Classroom {
+public class Aula {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,7 @@ public class Classroom {
     @Column(nullable = false)
     private Integer capacidad;
 
-    public Classroom() {
+    public Aula() {
     }
 
     public Integer getId() {
