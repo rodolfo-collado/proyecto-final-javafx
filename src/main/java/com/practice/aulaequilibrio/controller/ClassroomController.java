@@ -64,7 +64,7 @@ public class ClassroomController {
                 String normalized=code.getText().trim();if(normalized.isBlank()||normalized.length()>20)throw new IllegalArgumentException("Ingrese un código de hasta 20 caracteres.");
                 int count;try{count=Integer.parseInt(capacity.getText().trim());}catch(NumberFormatException ex){throw new IllegalArgumentException("La capacidad debe ser un número entero mayor que cero.");}
                 if(count<=0)throw new IllegalArgumentException("La capacidad debe ser mayor que cero.");if(type.getValue()==null)throw new IllegalArgumentException("Seleccione un tipo de aula.");
-                // La entidad seleccionada conserva su id y revisión; no se clona una identidad falsa.
+                // Mantener el id y la revisión para detectar ediciones simultáneas.
                 Classroom value=selected==null?new Classroom():selected;String oldCode=value.getCodigo();Integer oldCapacity=value.getCapacidad();ClassroomType oldType=value.getType();
                 value.setCodigo(normalized);value.setCapacidad(count);value.setType(type.getValue());
                 save(dialog,feedback,() -> {try{classrooms.guardar(value);}catch(RuntimeException ex){value.setCodigo(oldCode);value.setCapacidad(oldCapacity);value.setType(oldType);throw ex;}});
