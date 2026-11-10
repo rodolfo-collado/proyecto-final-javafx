@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.practice.aulaequilibrio.controller.ClassroomController" style="-fx-background-color: #f4f7f9; -fx-font-family: 'Segoe UI'; -fx-font-size: 13px;">
+ <padding><Insets top="24" right="24" bottom="20" left="24"/></padding>
+ <top><VBox spacing="8"><Label text="Aulas y tipos de aula" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #173846;"/><Label text="Registre los espacios disponibles, su capacidad y su tipo."/><Region prefHeight="16"/></VBox></top>
+ <center><TabPane tabClosingPolicy="UNAVAILABLE">
+  <tabs>
+   <Tab text="Aulas"><BorderPane><top><HBox spacing="10" alignment="CENTER_LEFT"><padding><Insets top="18" bottom="16"/></padding><Button text="Agregar aula" onAction="#addClassroom"/><Button text="Editar aula" onAction="#editSelectedClassroom"/><Button text="Eliminar aula" onAction="#deleteClassroom"/><Region HBox.hgrow="ALWAYS"/><Label text="Filtrar por tipo:"/><ComboBox fx:id="typeFilter" promptText="Todos los tipos" onAction="#filter" prefWidth="180"/><Button text="Actualizar" onAction="#refresh"/></HBox></top>
+   <center><TableView fx:id="classroomTable"><columns><TableColumn fx:id="codeColumn" text="Código" prefWidth="180"/><TableColumn fx:id="capacityColumn" text="Capacidad" prefWidth="160"/><TableColumn fx:id="classroomTypeColumn" text="Tipo de aula" prefWidth="420"/></columns></TableView></center></BorderPane></Tab>
+   <Tab text="Tipos de aula"><BorderPane><top><HBox spacing="10"><padding><Insets top="18" bottom="16"/></padding><Button text="Agregar tipo" onAction="#addType"/><Button text="Editar tipo" onAction="#editSelectedType"/><Button text="Eliminar tipo" onAction="#deleteType"/><Button text="Actualizar" onAction="#refresh"/></HBox></top>
+   <center><TableView fx:id="typeTable"><columns><TableColumn fx:id="typeNameColumn" text="Nombre del tipo" prefWidth="760"/></columns></TableView></center></BorderPane></Tab>
+  </tabs>
+ </TabPane></center>
+ <bottom><Label fx:id="status" text="Cargando…"><padding><Insets top="16"/></padding></Label></bottom>
+</BorderPane>

@@ -78,8 +78,9 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.practice.aulaequilibrio/com.practice.aulaequilibrio.AulaEquilibrioApplication
+                                com.practice.aulaequilibrio.Launcher
                             </mainClass>
+                            <runtimePathOption>CLASSPATH</runtimePathOption>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
