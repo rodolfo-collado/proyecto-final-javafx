@@ -18,6 +18,7 @@
 
             <Label fx:id="welcomeMessage"/>
             <Button text="Bienvenido" onAction="#showWelcomeMessage"/>
+            <Button text="Horarios" onAction="#openSchedules"/>
         </VBox>
     </Tab>
     <Tab text="Grupos">
