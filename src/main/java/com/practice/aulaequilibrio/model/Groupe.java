@@ -38,4 +38,9 @@ public class Groupe {
     public void setCantidadEstudiantes(Integer cantidadEstudiantes) {
         this.cantidadEstudiantes = cantidadEstudiantes;
     }
+
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }
