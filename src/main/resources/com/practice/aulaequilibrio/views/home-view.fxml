@@ -23,4 +23,7 @@
     <Tab text="Grupos">
         <fx:include source="groupe-view.fxml"/>
     </Tab>
+    <Tab text="Asignaturas">
+        <fx:include source="subject-view.fxml"/>
+    </Tab>
 </TabPane>
