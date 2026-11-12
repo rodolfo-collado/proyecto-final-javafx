@@ -85,17 +85,16 @@ public class SubjectController {
         if (selected == null) {
             return;
         }
-        if (!Dialogs.confirm(table, "Eliminar asignatura",
-                "¿Desea eliminar la asignatura \"" + selected + "\"?")) {
-            return;
-        }
-        try {
-            service.delete(selected.getId());
-            refresh();
-        } catch (RuntimeException exception) {
-            Dialogs.error(table, "No se pudo eliminar la asignatura", exception);
-            refresh();
-        }
+        Dialogs.confirm(table, "Eliminar asignatura",
+                "¿Desea eliminar la asignatura \"" + selected + "\"?", () -> {
+            try {
+                service.delete(selected.getId());
+                refresh();
+            } catch (RuntimeException exception) {
+                Dialogs.error(table, "No se pudo eliminar la asignatura", exception);
+                refresh();
+            }
+        });
     }
 
     private void fillForm(Subject subject) {

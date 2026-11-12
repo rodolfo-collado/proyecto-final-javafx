@@ -78,6 +78,31 @@
     -fx-background-color: #dce6ee;
 }
 
+.mdi-dialog-layer {
+    -fx-background-color: rgba(20, 46, 75, 0.38);
+    -fx-padding: 12;
+}
+
+.mdi-dialog {
+    -fx-background-color: -aula-surface;
+    -fx-background-radius: 10;
+    -fx-border-color: -aula-border;
+    -fx-border-radius: 10;
+}
+
+.mdi-dialog > .header-panel {
+    -fx-background-color: #e4edf4;
+    -fx-background-radius: 10 10 0 0;
+}
+
+.mdi-dialog.mdi-warning > .header-panel {
+    -fx-background-color: #fff0d6;
+}
+
+.mdi-dialog.mdi-error > .header-panel {
+    -fx-background-color: #f9e8e6;
+}
+
 .mdi-snap-preview {
     -fx-fill: rgba(18, 108, 99, 0.18);
     -fx-stroke: -aula-accent;
@@ -91,8 +116,12 @@
 }
 
 .mdi-title-bar {
-    -fx-background-color: -aula-navy;
+    -fx-background-color: #294861;
     -fx-padding: 8 12;
+}
+
+.mdi-window:active-window .mdi-title-bar {
+    -fx-background-color: -aula-navy;
 }
 
 .mdi-title-bar .button {

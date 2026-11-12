@@ -78,16 +78,15 @@ public class GroupeController {
         if (selected == null) {
             return;
         }
-        if (!Dialogs.confirm(table, "Eliminar grupo", "¿Desea eliminar el grupo \"" + selected.getNombre() + "\"?")) {
-            return;
-        }
-        try {
-            service.delete(selected.getId());
-            refresh();
-        } catch (RuntimeException exception) {
-            Dialogs.error(table, "No se pudo eliminar el grupo", exception);
-            refresh();
-        }
+        Dialogs.confirm(table, "Eliminar grupo", "¿Desea eliminar el grupo \"" + selected.getNombre() + "\"?", () -> {
+            try {
+                service.delete(selected.getId());
+                refresh();
+            } catch (RuntimeException exception) {
+                Dialogs.error(table, "No se pudo eliminar el grupo", exception);
+                refresh();
+            }
+        });
     }
 
     private void fillForm(Groupe groupe) {

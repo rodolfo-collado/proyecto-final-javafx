@@ -8,6 +8,8 @@ También puedes arrastrar una ventana directamente desde la barra de título. Al
 
 Para ver varias ventanas a la vez, abre los módulos y elige **Ventanas → Organizar en cascada**. Se acomodan superpuestas con sus barras de título visibles.
 
+Pulsa una ventana interna para traerla al frente. Los avisos, las confirmaciones y los formularios de aulas y horarios se muestran dentro del escritorio. Resuelve el cuadro activo para continuar con los módulos.
+
 ## Ejecutar
 
 Se requiere JDK 21 y PostgreSQL. Copia `.env.example` a `.env` y configura `DB_URL`, `DB_USER` y `DB_PASSWORD` para una base existente. El usuario de la base debe poder crear/actualizar tablas, como requiere la configuración Hibernate existente.
@@ -29,6 +31,8 @@ La semilla agrega filas de ejemplo que falten y conserva los registros existente
 En **Aulas**, crea primero un tipo de aula y luego registra un aula con ese tipo. En **Horarios**, el aula aparecerá entre las opciones de una asignación.
 
 En **Docentes y disponibilidad**, pulsa **Nuevo docente** o selecciona una fila y pulsa **Editar**. El formulario se abre en una ventana interna con su propia entrada en la barra de tareas. Al seleccionar un docente, el panel lateral muestra sus bloques.
+
+Busca docentes por nombre o correo y filtra por presencia de correo. En el panel lateral puedes combinar el día y el número exacto de bloque. Si el filtro de docentes oculta la fila seleccionada, el panel lateral se limpia hasta que selecciones otro docente.
 
 - El nombre es obligatorio y admite hasta 120 caracteres. El correo es opcional y único.
 - Cada bloque exige un docente existente, un día de lunes a domingo y un número entero mayor que cero. No se impone un máximo de bloques porque el requisito no lo define.

@@ -1,22 +1,33 @@
 package com.practice.aulaequilibrio.view.mdi;
 
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.css.PseudoClass;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.DialogPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class MdiDesktop extends Pane {
+    private static final PseudoClass ACTIVE_WINDOW = PseudoClass.getPseudoClass("active-window");
     private final Map<String, MdiWindow> windows = new HashMap<>();
     private final Map<String, String> popupOwners = new HashMap<>();
     private final ReadOnlyStringWrapper activeTitle = new ReadOnlyStringWrapper();
     private final Rectangle snapPreview = new Rectangle();
+    private final StackPane dialogLayer = new StackPane();
+    private final Deque<DialogPane> dialogs = new ArrayDeque<>();
+    private final ReadOnlyBooleanWrapper dialogShowing = new ReadOnlyBooleanWrapper();
 
     public MdiDesktop() {
         getStyleClass().add("mdi-desktop");
@@ -30,6 +41,45 @@ public final class MdiDesktop extends Pane {
         snapPreview.setVisible(false);
         snapPreview.setViewOrder(-1);
         getChildren().add(snapPreview);
+        dialogLayer.getStyleClass().add("mdi-dialog-layer");
+        dialogLayer.setManaged(false);
+        dialogLayer.setVisible(false);
+        dialogLayer.setViewOrder(-2);
+        getChildren().add(dialogLayer);
+    }
+
+    public ReadOnlyBooleanProperty dialogShowingProperty() {
+        return dialogShowing.getReadOnlyProperty();
+    }
+
+    public void showDialog(DialogPane dialog) {
+        dialogs.addLast(dialog);
+        if (dialogs.size() == 1) {
+            updateDialogLayer();
+        }
+    }
+
+    public void closeDialog(DialogPane dialog) {
+        if (dialogs.peekFirst() == dialog) {
+            dialogs.removeFirst();
+            updateDialogLayer();
+        }
+    }
+
+    private void updateDialogLayer() {
+        DialogPane dialog = dialogs.peekFirst();
+        if (dialog == null) {
+            dialogLayer.getChildren().clear();
+            dialogLayer.setVisible(false);
+            dialogShowing.set(false);
+            selectTopVisibleWindow();
+            return;
+        }
+        dialogShowing.set(true);
+        dialogLayer.getChildren().setAll(dialog);
+        dialogLayer.setVisible(true);
+        requestLayout();
+        dialog.requestFocus();
     }
 
     public ReadOnlyStringProperty activeTitleProperty() {
@@ -61,6 +111,7 @@ public final class MdiDesktop extends Pane {
         }
         double offset = 18 + (windows.size() % 6) * 24;
         MdiWindow window = new MdiWindow(this, title, content, width, height, offset, closable);
+        window.disableProperty().bind(dialogShowing);
         windows.put(title, window);
         getChildren().add(window);
         requestLayout();
@@ -86,7 +137,7 @@ public final class MdiDesktop extends Pane {
 
     void bringToFront(MdiWindow window) {
         window.toFront();
-        activeTitle.set(window.title());
+        updateWindowOrder(window);
     }
 
     void minimize(MdiWindow window) {
@@ -107,12 +158,23 @@ public final class MdiDesktop extends Pane {
     private void selectTopVisibleWindow() {
         for (Node child : getChildren().reversed()) {
             if (child instanceof MdiWindow window && window.isVisible()) {
-                activeTitle.set(window.title());
+                updateWindowOrder(window);
                 window.requestFocus();
                 return;
             }
         }
-        activeTitle.set(null);
+        updateWindowOrder(null);
+    }
+
+    private void updateWindowOrder(MdiWindow active) {
+        int layer = 0;
+        for (Node child : getChildren().reversed()) {
+            if (child instanceof MdiWindow window) {
+                window.setViewOrder(layer++);
+                window.pseudoClassStateChanged(ACTIVE_WINDOW, window == active);
+            }
+        }
+        activeTitle.set(active == null ? null : active.title());
     }
 
     public void cascade() {
@@ -151,6 +213,7 @@ public final class MdiDesktop extends Pane {
 
     @Override
     protected void layoutChildren() {
+        dialogLayer.resizeRelocate(0, 0, getWidth(), getHeight());
         for (MdiWindow window : windows.values()) {
             window.fitDesktop(getWidth(), getHeight());
         }

@@ -15,8 +15,13 @@
                 <Button fx:id="deleteTeacherButton" text="Eliminar docente" onAction="#deleteTeacher" styleClass="danger"/>
                 <Button text="Actualizar" onAction="#reload"/>
             </FlowPane>
+            <HBox spacing="7" alignment="CENTER_LEFT">
+                <TextField fx:id="teacherSearch" promptText="Buscar por nombre o correo"
+                           accessibleText="Buscar docentes" HBox.hgrow="ALWAYS"/>
+                <ComboBox fx:id="emailFilter" accessibleText="Filtrar docentes por correo" prefWidth="120"/>
+            </HBox>
             <TableView fx:id="teachers" VBox.vgrow="ALWAYS">
-                <placeholder><Label text="No hay docentes registrados."/></placeholder>
+                <placeholder><Label fx:id="emptyTeachers" text="No hay docentes registrados."/></placeholder>
                 <columns>
                     <TableColumn fx:id="teacherName" text="Nombre" prefWidth="230"/>
                     <TableColumn fx:id="teacherEmail" text="Correo" prefWidth="270"/>
@@ -28,6 +33,11 @@
                 <Label text="Disponibilidad" styleClass="card-title"/>
                 <Label fx:id="availabilityTitle" text="Selecciona un docente" wrapText="true" styleClass="muted"/>
             </VBox>
+            <HBox spacing="7" alignment="CENTER_LEFT">
+                <ComboBox fx:id="dayFilter" accessibleText="Filtrar disponibilidad por día" prefWidth="145"/>
+                <TextField fx:id="blockFilter" promptText="N.º de bloque" accessibleText="Filtrar por número de bloque"
+                           prefColumnCount="7" HBox.hgrow="ALWAYS"/>
+            </HBox>
             <TableView fx:id="blocks" VBox.vgrow="ALWAYS" minHeight="120">
                 <placeholder>
                     <Label fx:id="emptyBlocks" text="Selecciona un docente para ver sus bloques." wrapText="true"/>

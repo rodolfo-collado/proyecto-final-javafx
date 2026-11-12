@@ -8,7 +8,6 @@ import com.practice.aulaequilibrio.repository.ScheduleRepository.Placement;
 import com.practice.aulaequilibrio.util.Dialogs;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -31,7 +30,6 @@ public class ScheduleView extends BorderPane {
     private static final String STYLESHEET = ScheduleView.class.getResource(
             "/com/practice/aulaequilibrio/styles/aula.css").toExternalForm();
     private static final Option ALL_GROUPS = new Option(null, "Todos los grupos");
-    private static final ButtonType SAVE = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
 
     private final ScheduleRepository repository = new ScheduleRepository();
     private final ComboBox<ScheduleVersion> versions = new ComboBox<>();
@@ -141,10 +139,11 @@ public class ScheduleView extends BorderPane {
 
     private void deleteVersion() {
         ScheduleVersion version = versions.getValue();
-        if (confirm("¿Eliminar la versión «" + version.getName() + "»?")) {
-            repository.deleteVersion(version.getId());
-            reloadVersions(null);
-        }
+        Dialogs.confirm(this, "Eliminar versión", "¿Eliminar la versión «" + version.getName() + "»?",
+                () -> runAction(() -> {
+                    repository.deleteVersion(version.getId());
+                    reloadVersions(null);
+                }));
     }
 
     private void assignmentDialog(ScheduleAssignment assignment) {
@@ -193,38 +192,27 @@ public class ScheduleView extends BorderPane {
 
     private void deleteAssignment() {
         ScheduleAssignment assignment = table.getSelectionModel().getSelectedItem();
-        if (confirm("¿Eliminar la asignación seleccionada?")) {
-            repository.deleteAssignment(selectedVersionId(), assignment.getId());
-            refreshAssignments();
-        }
+        int versionId = selectedVersionId();
+        Dialogs.confirm(this, "Eliminar asignación", "¿Eliminar la asignación seleccionada?",
+                () -> runAction(() -> {
+                    repository.deleteAssignment(versionId, assignment.getId());
+                    refreshAssignments();
+                }));
     }
 
     private void showEditor(String title, GridPane fields, Runnable save) {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle(title);
         Label error = new Label();
         error.setWrapText(true);
         error.getStyleClass().add("field-error");
         VBox content = new VBox(10, fields, error);
-        content.setPrefWidth(360);
-        dialog.getDialogPane().setContent(content);
-        dialog.getDialogPane().getStylesheets().add(STYLESHEET);
-        dialog.getDialogPane().getButtonTypes().setAll(SAVE, ButtonType.CANCEL);
-        dialog.getDialogPane().lookupButton(SAVE).addEventFilter(ActionEvent.ACTION, event -> {
+        Dialogs.form(this, title, content, (pane, close) -> {
             try {
                 save.run();
+                close.run();
             } catch (RuntimeException exception) {
                 error.setText(errorMessage(exception));
-                event.consume();
             }
         });
-        Dialogs.show(this, dialog);
-    }
-
-    private boolean confirm(String question) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, question, ButtonType.OK, ButtonType.CANCEL);
-        alert.getDialogPane().getStylesheets().add(STYLESHEET);
-        return Dialogs.show(this, alert).filter(ButtonType.OK::equals).isPresent();
     }
 
     private Button button(String label, Runnable action) {

@@ -10,10 +10,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +38,7 @@ class CatalogScreenTest {
                 loader.<CatalogController>getController().attachDesktop(root, CATALOG);
                 Stage window = new Stage();
                 window.setScene(new Scene(root, 1040, 740));
+                window.setMaximized(true);
                 window.show();
                 root.open(CATALOG, catalog, 1000, 660, true);
                 root.applyCss();
@@ -48,14 +47,42 @@ class CatalogScreenTest {
             });
             try {
                 idle();
-                teacher("Ana Pérez");
-                teacher("Luis López");
+                teacher("Ana Pérez", "ana@example.test");
+                teacher("Luis López", "");
                 block(0, 0, "2");
                 block(1, 1, "6");
                 selectTeacher(0);
                 assertEquals(1, fx(() -> table("blocks").getItems().size()));
                 Availability shown = fx(() -> (Availability) table("blocks").getItems().getFirst());
                 assertEquals("Ana Pérez", shown.getTeacher().getName());
+                fx(() -> {
+                    field("teacherSearch").setText("PEREZ");
+                    assertEquals(1, table("teachers").getItems().size());
+                    assertSame(shown, table("blocks").getItems().getFirst());
+                    field("teacherSearch").setText("ANA@EXAMPLE.TEST");
+                    assertEquals(1, table("teachers").getItems().size());
+                    combo("emailFilter").getSelectionModel().select(2);
+                    assertTrue(table("teachers").getItems().isEmpty());
+                    assertTrue(table("blocks").getItems().isEmpty());
+                    field("teacherSearch").clear();
+                    assertEquals(1, table("teachers").getItems().size());
+                    combo("emailFilter").getSelectionModel().selectFirst();
+                    assertEquals(2, table("teachers").getItems().size());
+                    return null;
+                });
+                selectTeacher(0);
+                fx(() -> {
+                    combo("dayFilter").getSelectionModel().select(2);
+                    assertTrue(table("blocks").getItems().isEmpty());
+                    combo("dayFilter").getSelectionModel().select(1);
+                    field("blockFilter").setText("99");
+                    assertTrue(table("blocks").getItems().isEmpty());
+                    field("blockFilter").setText("2");
+                    assertEquals(1, table("blocks").getItems().size());
+                    field("blockFilter").clear();
+                    combo("dayFilter").getSelectionModel().selectFirst();
+                    return null;
+                });
                 fx(() -> {
                     table("blocks").getSelectionModel().select(0);
                     field("blockNumber").setText("9");
@@ -71,6 +98,8 @@ class CatalogScreenTest {
                 });
                 String warning = waitForWarning();
                 assertTrue(warning.contains("bloques asociados"));
+                assertTrue(fx(stage::isMaximized));
+                assertFalse(fx(() -> root.dialogShowingProperty().get()));
                 assertEquals(2, dao.listTeachers().size());
                 fx(() -> {
                     table("blocks").getSelectionModel().select(0);
@@ -86,7 +115,7 @@ class CatalogScreenTest {
         }
     }
 
-    private void teacher(String name) throws Exception {
+    private void teacher(String name, String email) throws Exception {
         fx(() -> {
             click("Nuevo docente");
             assertEquals(TEACHER_FORM, root.activeTitleProperty().get());
@@ -95,6 +124,9 @@ class CatalogScreenTest {
             root.lookupAll(".text-field").stream().filter(n -> n instanceof TextField field
                     && "Nombre del docente".equals(field.getPromptText())).map(TextField.class::cast)
                     .findFirst().orElseThrow().setText(name);
+            root.lookupAll(".text-field").stream().filter(n -> n instanceof TextField field
+                    && "correo@ejemplo.com".equals(field.getPromptText())).map(TextField.class::cast)
+                    .findFirst().orElseThrow().setText(email);
             click("Guardar docente");
             return null;
         });
@@ -118,12 +150,10 @@ class CatalogScreenTest {
     private String waitForWarning() throws Exception {
         for (int i = 0; i < 200; i++) {
             String text = fx(() -> {
-                for (Window window : new ArrayList<>(Window.getWindows())) {
-                    if (window.getScene().getRoot() instanceof DialogPane pane) {
-                        String content = pane.getContentText();
-                        ((Button) pane.lookupButton(ButtonType.OK)).fire();
-                        return content;
-                    }
+                if (root.lookup(".mdi-dialog") instanceof DialogPane pane) {
+                    String content = pane.getContentText();
+                    ((Button) pane.lookupButton(ButtonType.OK)).fire();
+                    return content;
                 }
                 return null;
             });
@@ -134,9 +164,9 @@ class CatalogScreenTest {
     }
     private void approveNextDialog() {
         Platform.runLater(() -> {
-            for (Window window : new ArrayList<>(Window.getWindows()))
-                if (window.getScene().getRoot() instanceof DialogPane pane)
-                    ((Button) pane.lookupButton(ButtonType.OK)).fire();
+            if (root.lookup(".mdi-dialog") instanceof DialogPane pane) {
+                ((Button) pane.lookupButton(ButtonType.OK)).fire();
+            }
         });
     }
     private void idle() throws Exception {

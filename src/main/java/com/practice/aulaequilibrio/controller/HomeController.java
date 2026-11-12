@@ -10,10 +10,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -26,8 +24,6 @@ public class HomeController {
     private static final PseudoClass MODULE_ACTIVE = PseudoClass.getPseudoClass("module-active");
 
     @FXML
-    private BorderPane dashboard;
-    @FXML
     private VBox home;
     @FXML
     private MdiDesktop desktop;
@@ -38,6 +34,7 @@ public class HomeController {
 
     @FXML
     private void initialize() {
+        taskbar.disableProperty().bind(desktop.dialogShowingProperty());
         desktop.activeTitleProperty().addListener((observable, previous, current) -> updateTaskbar());
         desktop.getChildrenUnmodifiable().addListener((ListChangeListener<Node>) change -> updateTaskbar());
         desktop.open(DASHBOARD, home, 1000, 660, false);
@@ -98,8 +95,7 @@ public class HomeController {
             desktop.open(title, catalog, 1000, 660, true);
         } catch (IOException exception) {
             LOGGER.log(System.Logger.Level.ERROR, "No se pudo abrir " + title, exception);
-            Alert error = new Alert(Alert.AlertType.ERROR, "No se pudo abrir " + title + ".");
-            Dialogs.show(dashboard, error);
+            Dialogs.error(desktop, "No se pudo abrir " + title, exception);
         }
     }
 
