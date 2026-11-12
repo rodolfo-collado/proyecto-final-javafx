@@ -3,6 +3,7 @@ package com.practice.aulaequilibrio.controller;
 import com.practice.aulaequilibrio.util.Dialogs;
 import com.practice.aulaequilibrio.view.ScheduleView;
 import com.practice.aulaequilibrio.view.mdi.MdiDesktop;
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
@@ -53,7 +54,7 @@ public class HomeController {
                     .anyMatch(node -> node instanceof Button button && title.equals(button.getText()));
             if (!inTaskbar && popupTasks.getChildren().stream().noneMatch(node -> title.equals(((Button) node).getText()))) {
                 Button task = new Button(title);
-                task.setOnAction(event -> desktop.activate(title));
+                task.setOnAction(event -> desktop.toggleTask(title));
                 popupTasks.getChildren().add(task);
             }
         }
@@ -69,8 +70,8 @@ public class HomeController {
     }
 
     @FXML
-    private void showHome() {
-        desktop.activate(DASHBOARD);
+    private void showHome(ActionEvent event) {
+        activateExisting(event, DASHBOARD);
     }
 
     @FXML
@@ -79,10 +80,15 @@ public class HomeController {
     }
 
     @FXML
+    private void exitApplication() {
+        Platform.exit();
+    }
+
+    @FXML
     private void openCatalog(ActionEvent event) {
         Button shortcut = (Button) event.getSource();
         String title = shortcut.getAccessibleText();
-        if (desktop.activate(title)) {
+        if (activateExisting(event, title)) {
             return;
         }
         try {
@@ -100,12 +106,19 @@ public class HomeController {
     }
 
     @FXML
-    private void openSchedules() {
-        if (desktop.activate("Horarios")) {
+    private void openSchedules(ActionEvent event) {
+        if (activateExisting(event, "Horarios")) {
             return;
         }
         ScheduleView schedules = new ScheduleView();
         schedules.load();
         desktop.open("Horarios", schedules, 900, 540, true);
+    }
+
+    private boolean activateExisting(ActionEvent event, String title) {
+        if (taskbar.getItems().contains(event.getSource())) {
+            return desktop.toggleTask(title);
+        }
+        return desktop.activate(title);
     }
 }

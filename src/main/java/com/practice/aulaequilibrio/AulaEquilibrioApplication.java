@@ -30,6 +30,8 @@ public class AulaEquilibrioApplication extends Application {
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
+        stage.setFullScreenExitHint("Pulsa Esc para volver al modo ventana.");
+        stage.setFullScreen(true);
     }
 
     @Override

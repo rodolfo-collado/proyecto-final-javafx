@@ -1,12 +1,12 @@
 # Aula Equilibrio
 
-Aplicación JavaFX con persistencia en PostgreSQL mediante Hibernate. La ventana principal se abre maximizada con el **Dashboard** visible dentro del escritorio MDI. La barra de tareas superior abre Horarios y los catálogos, marca los módulos abiertos y resalta el que está al frente.
+Aplicación JavaFX con persistencia en PostgreSQL mediante Hibernate. La aplicación se abre en pantalla completa con el **Dashboard** visible dentro del escritorio MDI. Pulsa **Esc** para volver al modo ventana o usa **Inicio → Salir de Aula Equilibrio** para cerrar la aplicación. La barra de tareas superior abre Horarios y los catálogos, marca los módulos abiertos y resalta el que está al frente.
 
 Cada módulo se abre maximizado dentro del área de trabajo. Usa **Minimizar** para ocultarlo sin cerrar sus datos y vuelve a seleccionarlo desde la barra. Usa **Restaurar** para mover la ventana desde su barra de título y cambiar su tamaño desde la esquina inferior derecha.
 
 También puedes arrastrar una ventana directamente desde la barra de título. Al acercarla a un lateral aparece una vista previa de media pantalla. En una esquina ocupa un cuarto del escritorio y en el borde superior se maximiza. Suelta para aplicar el ajuste o arrástrala de nuevo para recuperar su tamaño libre.
 
-Para ver varias ventanas a la vez, abre los módulos y elige **Ventanas → Organizar en cascada**. Se acomodan superpuestas con sus barras de título visibles.
+Pulsa la entrada de una ventana activa en la barra superior para minimizarla. Si está minimizada o detrás de otra, al pulsarla vuelve al frente. La entrada **Aula Equilibrio** corresponde al Dashboard. Para ver varias ventanas a la vez, elige **Inicio → Organizar en cascada**. Se acomodan superpuestas con sus barras de título visibles.
 
 Pulsa una ventana interna para traerla al frente. Los avisos, las confirmaciones y los formularios de aulas y horarios se muestran dentro del escritorio. Resuelve el cuadro activo para continuar con los módulos.
 

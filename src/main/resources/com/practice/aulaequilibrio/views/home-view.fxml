@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -14,30 +16,34 @@
             fx:controller="com.practice.aulaequilibrio.controller.HomeController"
             stylesheets="@../styles/aula.css">
     <top>
-        <VBox>
-            <HBox alignment="CENTER_LEFT" spacing="13" styleClass="masthead">
-                <Label text="AE" styleClass="brand-mark"/>
-                <VBox spacing="2">
-                    <Label text="Aula Equilibrio" styleClass="brand-title"/>
-                    <Label text="Planificación académica" styleClass="brand-subtitle"/>
-                </VBox>
-            </HBox>
-            <ToolBar fx:id="taskbar" styleClass="mdi-menu">
-                <Button text="Dashboard" onAction="#showHome"/>
-                <Button text="Horarios" onAction="#openSchedules"/>
-                <Button text="Docentes y disponibilidad" accessibleText="Docentes y disponibilidad"
-                        userData="catalog-view.fxml" onAction="#openCatalog"/>
-                <Button text="Oferta académica" accessibleText="Oferta académica"
-                        userData="academic-offer-view.fxml" onAction="#openCatalog"/>
-                <Button text="Aulas" accessibleText="Aulas" userData="classroom-view.fxml" onAction="#openCatalog"/>
-                <MenuButton text="Ventanas">
-                    <items>
-                        <MenuItem text="Organizar en cascada" onAction="#arrangeWindows"/>
-                    </items>
-                </MenuButton>
-                <HBox fx:id="popupTasks" spacing="6"/>
-            </ToolBar>
-        </VBox>
+        <ToolBar fx:id="taskbar" styleClass="mdi-menu">
+            <Button text="Dashboard" accessibleText="Aula Equilibrio, abrir Dashboard"
+                    contentDisplay="GRAPHIC_ONLY" onAction="#showHome" styleClass="taskbar-home">
+                <graphic>
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="AE" styleClass="brand-mark"/>
+                        <Label text="Aula Equilibrio" styleClass="brand-title"/>
+                    </HBox>
+                </graphic>
+            </Button>
+            <MenuButton text="Inicio" styleClass="taskbar-tools">
+                <items>
+                    <MenuItem text="Volver al Dashboard" onAction="#showHome"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Organizar en cascada" onAction="#arrangeWindows"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Salir de Aula Equilibrio" onAction="#exitApplication"/>
+                </items>
+            </MenuButton>
+            <Separator orientation="VERTICAL"/>
+            <Button text="Horarios" onAction="#openSchedules"/>
+            <Button text="Docentes y disponibilidad" accessibleText="Docentes y disponibilidad"
+                    userData="catalog-view.fxml" onAction="#openCatalog"/>
+            <Button text="Oferta académica" accessibleText="Oferta académica"
+                    userData="academic-offer-view.fxml" onAction="#openCatalog"/>
+            <Button text="Aulas" accessibleText="Aulas" userData="classroom-view.fxml" onAction="#openCatalog"/>
+            <HBox fx:id="popupTasks" spacing="6"/>
+        </ToolBar>
     </top>
     <fx:define>
         <VBox fx:id="home" spacing="19" styleClass="home-page">

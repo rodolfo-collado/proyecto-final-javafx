@@ -21,36 +21,44 @@
     -fx-text-fill: -aula-ink;
 }
 
-.masthead {
-    -fx-background-color: -aula-navy;
-    -fx-padding: 14 25;
-}
-
 .brand-mark {
-    -fx-min-width: 40px;
-    -fx-min-height: 40px;
+    -fx-min-width: 26px;
+    -fx-min-height: 26px;
     -fx-alignment: center;
     -fx-background-color: #2a566b;
-    -fx-background-radius: 10;
+    -fx-background-radius: 6;
     -fx-font-weight: bold;
     -fx-text-fill: #c8f5e9;
 }
 
 .brand-title {
-    -fx-text-fill: white;
-    -fx-font-size: 17px;
+    -fx-text-fill: -aula-ink;
+    -fx-font-size: 14px;
     -fx-font-weight: bold;
 }
 
-.brand-subtitle {
-    -fx-text-fill: #c3d5e8;
-    -fx-font-size: 12px;
+.mdi-menu .taskbar-home {
+    -fx-padding: 3 9 3 5;
+}
+
+.mdi-menu .taskbar-home:module-active .brand-title {
+    -fx-text-fill: white;
+}
+
+.taskbar-tools {
+    -fx-background-color: #e1ebf2;
+    -fx-background-insets: 0;
+    -fx-background-radius: 7;
+}
+
+.taskbar-tools:hover {
+    -fx-background-color: #d4e3ed;
 }
 
 .mdi-menu {
     -fx-background-color: -aula-surface;
     -fx-border-color: transparent transparent -aula-border transparent;
-    -fx-padding: 8 20;
+    -fx-padding: 6 14;
 }
 
 .mdi-menu .button {
@@ -124,8 +132,23 @@
     -fx-background-color: -aula-navy;
 }
 
-.mdi-title-bar .button {
+.mdi-title-bar .window-control {
     -fx-cursor: hand;
+    -fx-min-width: 32;
+    -fx-min-height: 27;
+    -fx-padding: 4;
+}
+
+.window-icon {
+    -fx-fill: transparent;
+    -fx-stroke: -aula-ink;
+    -fx-stroke-width: 1.4;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+}
+
+.window-control.danger .window-icon {
+    -fx-stroke: -aula-danger;
 }
 
 .mdi-caption {

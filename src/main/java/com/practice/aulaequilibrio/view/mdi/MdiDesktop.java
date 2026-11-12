@@ -105,6 +105,14 @@ public final class MdiDesktop extends Pane {
         return true;
     }
 
+    public boolean toggleTask(String title) {
+        if (title.equals(activeTitle.get())) {
+            minimize(windows.get(title));
+            return true;
+        }
+        return activate(title);
+    }
+
     public void open(String title, Parent content, int width, int height, boolean closable) {
         if (activate(title)) {
             return;

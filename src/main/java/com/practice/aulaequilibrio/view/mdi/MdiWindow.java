@@ -7,13 +7,20 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBase;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.shape.ClosePath;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
 
 final class MdiWindow extends BorderPane {
     private static final double MIN_WIDTH = 420;
@@ -21,7 +28,12 @@ final class MdiWindow extends BorderPane {
 
     private final MdiDesktop desktop;
     private final String title;
-    private final Button maximize = new Button("Restaurar");
+    private final Path maximizeIcon = icon(new MoveTo(1, 1), new LineTo(13, 1),
+            new LineTo(13, 13), new LineTo(1, 13), new ClosePath());
+    private final Path restoreIcon = icon(new MoveTo(1, 5), new LineTo(9, 5), new LineTo(9, 13),
+            new LineTo(1, 13), new ClosePath(), new MoveTo(5, 5), new LineTo(5, 1),
+            new LineTo(13, 1), new LineTo(13, 9), new LineTo(9, 9));
+    private final Button maximize = windowControl("Restaurar", restoreIcon);
     private final HBox resizeBar = new HBox();
     private SnapZone zone = SnapZone.MAXIMIZED;
     private double normalX;
@@ -50,11 +62,12 @@ final class MdiWindow extends BorderPane {
         caption.getStyleClass().add("mdi-caption");
         caption.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(caption, Priority.ALWAYS);
-        Button minimize = new Button("Minimizar");
+        Button minimize = windowControl("Minimizar", icon(new MoveTo(1, 8), new LineTo(13, 8)));
         minimize.setOnAction(event -> desktop.minimize(this));
         HBox titleBar = new HBox(8, caption, minimize, maximize);
         if (closable) {
-            Button close = new Button("Cerrar");
+            Button close = windowControl("Cerrar", icon(new MoveTo(2, 2), new LineTo(12, 12),
+                    new MoveTo(12, 2), new LineTo(2, 12)));
             close.getStyleClass().add("danger");
             close.setOnAction(event -> desktop.close(this));
             titleBar.getChildren().add(close);
@@ -93,6 +106,24 @@ final class MdiWindow extends BorderPane {
         return title;
     }
 
+    private static Path icon(PathElement... elements) {
+        Path icon = new Path(elements);
+        icon.getStyleClass().add("window-icon");
+        icon.setMouseTransparent(true);
+        return icon;
+    }
+
+    private static Button windowControl(String text, Path icon) {
+        Button button = new Button(text, icon);
+        button.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        button.getStyleClass().add("window-control");
+        button.accessibleTextProperty().bind(button.textProperty());
+        Tooltip tooltip = new Tooltip();
+        tooltip.textProperty().bind(button.textProperty());
+        button.setTooltip(tooltip);
+        return button;
+    }
+
     void arrange(double x, double y, double width, double height) {
         normalX = x;
         normalY = y;
@@ -104,6 +135,7 @@ final class MdiWindow extends BorderPane {
     private void setZone(SnapZone value) {
         zone = value;
         maximize.setText(value == null ? "Maximizar" : "Restaurar");
+        maximize.setGraphic(value == null ? maximizeIcon : restoreIcon);
         resizeBar.setVisible(value == null);
         desktop.requestLayout();
     }
