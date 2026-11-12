@@ -2,10 +2,15 @@ package com.practice.aulaequilibrio.service;
 
 import com.practice.aulaequilibrio.model.Subject;
 import com.practice.aulaequilibrio.repository.SubjectRepository;
+import com.practice.aulaequilibrio.util.ErrorMessages;
+import com.practice.aulaequilibrio.util.ValidationException;
+import com.practice.aulaequilibrio.util.Validations;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Locale;
 
+@RequiredArgsConstructor
 public class SubjectService {
 
     private static final int MAX_CODIGO = 20;
@@ -15,10 +20,6 @@ public class SubjectService {
 
     public SubjectService() {
         this(new SubjectRepository());
-    }
-
-    public SubjectService(SubjectRepository repository) {
-        this.repository = repository;
     }
 
     public List<Subject> listAll() {

@@ -5,16 +5,17 @@ import com.practice.aulaequilibrio.model.ScheduleVersion;
 import com.practice.aulaequilibrio.repository.ScheduleRepository;
 import com.practice.aulaequilibrio.repository.ScheduleRepository.Option;
 import com.practice.aulaequilibrio.repository.ScheduleRepository.Placement;
+import com.practice.aulaequilibrio.util.Dialogs;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
@@ -30,7 +31,6 @@ public class ScheduleView extends BorderPane {
     private static final String STYLESHEET = ScheduleView.class.getResource(
             "/com/practice/aulaequilibrio/styles/aula.css").toExternalForm();
     private static final Option ALL_GROUPS = new Option(null, "Todos los grupos");
-    private static final ButtonType SAVE = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
 
     private final ScheduleRepository repository = new ScheduleRepository();
     private final ComboBox<ScheduleVersion> versions = new ComboBox<>();
@@ -40,8 +40,7 @@ public class ScheduleView extends BorderPane {
 
     public ScheduleView() {
         getStylesheets().add(STYLESHEET);
-        getStyleClass().add("schedule-page");
-        setPadding(new Insets(20));
+        getStyleClass().addAll("schedule-page", "module-page");
         versions.setPromptText("Elige una versión");
         versions.setConverter(display(version -> version.getName() + " · " + version.getCreatedOn()));
         versions.setPrefWidth(280);
@@ -54,10 +53,10 @@ public class ScheduleView extends BorderPane {
         newVersion.getStyleClass().add("primary");
         editVersion.disableProperty().bind(versions.valueProperty().isNull());
         deleteVersion.disableProperty().bind(versions.valueProperty().isNull());
-        HBox versionBar = new HBox(8, new Label("Versión"), versions,
+        FlowPane versionBar = new FlowPane(8, 6, new Label("Versión"), versions,
                 newVersion, editVersion, deleteVersion);
         versionBar.setAlignment(Pos.CENTER_LEFT);
-        HBox filterBar = new HBox(8, new Label("Grupo"), groups,
+        FlowPane filterBar = new FlowPane(8, 6, new Label("Grupo"), groups,
                 button("Actualizar", () -> reload(selectedVersionId())));
         filterBar.setAlignment(Pos.CENTER_LEFT);
         Label title = new Label("Horarios");
@@ -74,8 +73,6 @@ public class ScheduleView extends BorderPane {
         table.getColumns().add(column("Aula", a -> a.getClassroom().getCodigo()));
         table.setPlaceholder(new Label("No hay asignaciones para esta selección."));
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
-        setMargin(table, new Insets(12, 0, 12, 0));
-        setCenter(table);
 
         Button add = button("Nueva asignación", () -> assignmentDialog(null));
         Button edit = button("Editar asignación", () -> assignmentDialog(table.getSelectionModel().getSelectedItem()));
@@ -85,8 +82,18 @@ public class ScheduleView extends BorderPane {
         add.disableProperty().bind(versions.valueProperty().isNull());
         edit.disableProperty().bind(table.getSelectionModel().selectedItemProperty().isNull());
         delete.disableProperty().bind(table.getSelectionModel().selectedItemProperty().isNull());
+        Label assignmentsTitle = new Label("Asignaciones");
+        assignmentsTitle.getStyleClass().add("card-title");
+        VBox assignments = new VBox(10, assignmentsTitle, new FlowPane(8, 6, add, edit, delete), table);
+        assignments.getStyleClass().add("panel");
+        VBox.setVgrow(table, Priority.ALWAYS);
+        setMargin(assignments, new Insets(12, 0, 0, 0));
+        setCenter(assignments);
+
         message.setWrapText(true);
-        setBottom(new VBox(10, new HBox(8, add, edit, delete), message));
+        message.getStyleClass().add("muted");
+        setMargin(message, new Insets(8, 0, 0, 0));
+        setBottom(message);
 
         versions.setOnAction(event -> refreshAssignments());
         groups.setOnAction(event -> refreshAssignments());
@@ -141,10 +148,11 @@ public class ScheduleView extends BorderPane {
 
     private void deleteVersion() {
         ScheduleVersion version = versions.getValue();
-        if (confirm("¿Eliminar la versión «" + version.getName() + "»?")) {
-            repository.deleteVersion(version.getId());
-            reloadVersions(null);
-        }
+        Dialogs.confirm(this, "Eliminar versión", "¿Eliminar la versión «" + version.getName() + "»?",
+                () -> runAction(() -> {
+                    repository.deleteVersion(version.getId());
+                    reloadVersions(null);
+                }));
     }
 
     private void assignmentDialog(ScheduleAssignment assignment) {
@@ -193,40 +201,27 @@ public class ScheduleView extends BorderPane {
 
     private void deleteAssignment() {
         ScheduleAssignment assignment = table.getSelectionModel().getSelectedItem();
-        if (confirm("¿Eliminar la asignación seleccionada?")) {
-            repository.deleteAssignment(selectedVersionId(), assignment.getId());
-            refreshAssignments();
-        }
+        int versionId = selectedVersionId();
+        Dialogs.confirm(this, "Eliminar asignación", "¿Eliminar la asignación seleccionada?",
+                () -> runAction(() -> {
+                    repository.deleteAssignment(versionId, assignment.getId());
+                    refreshAssignments();
+                }));
     }
 
     private void showEditor(String title, GridPane fields, Runnable save) {
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.initOwner(getScene().getWindow());
-        dialog.setTitle(title);
         Label error = new Label();
         error.setWrapText(true);
         error.getStyleClass().add("field-error");
         VBox content = new VBox(10, fields, error);
-        content.setPrefWidth(360);
-        dialog.getDialogPane().setContent(content);
-        dialog.getDialogPane().getStylesheets().add(STYLESHEET);
-        dialog.getDialogPane().getButtonTypes().setAll(SAVE, ButtonType.CANCEL);
-        dialog.getDialogPane().lookupButton(SAVE).addEventFilter(ActionEvent.ACTION, event -> {
+        Dialogs.form(this, title, content, (pane, close) -> {
             try {
                 save.run();
+                close.run();
             } catch (RuntimeException exception) {
                 error.setText(errorMessage(exception));
-                event.consume();
             }
         });
-        dialog.showAndWait();
-    }
-
-    private boolean confirm(String question) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, question, ButtonType.OK, ButtonType.CANCEL);
-        alert.initOwner(getScene().getWindow());
-        alert.getDialogPane().getStylesheets().add(STYLESHEET);
-        return alert.showAndWait().filter(ButtonType.OK::equals).isPresent();
     }
 
     private Button button(String label, Runnable action) {

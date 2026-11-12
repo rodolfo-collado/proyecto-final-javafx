@@ -1,8 +1,13 @@
 package com.practice.aulaequilibrio.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /** Un bloque disponible de un docente; día ISO: lunes=1, domingo=7. */
+@Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "availability")
 public class Availability {
@@ -12,21 +17,14 @@ public class Availability {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id", nullable = false)
+    @Setter
     private Teacher teacher;
 
     @Column(name = "weekday", nullable = false)
+    @Setter
     private Integer day;
 
     @Column(name = "block_number", nullable = false)
+    @Setter
     private Integer blockNumber;
-
-    public Availability() { }
-
-    public Integer getId() { return id; }
-    public Teacher getTeacher() { return teacher; }
-    public void setTeacher(Teacher teacher) { this.teacher = teacher; }
-    public Integer getDay() { return day; }
-    public void setDay(Integer day) { this.day = day; }
-    public Integer getBlockNumber() { return blockNumber; }
-    public void setBlockNumber(Integer blockNumber) { this.blockNumber = blockNumber; }
 }

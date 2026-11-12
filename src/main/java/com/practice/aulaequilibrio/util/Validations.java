@@ -1,11 +1,11 @@
-package com.practice.aulaequilibrio.service;
+package com.practice.aulaequilibrio.util;
 
-final class Validations {
+public final class Validations {
 
     private Validations() {
     }
 
-    static String required(String value, String field, int maxLength) {
+    public static String required(String value, String field, int maxLength) {
         String clean = value == null ? "" : value.trim();
         if (clean.isEmpty()) {
             throw new ValidationException("El campo " + field + " es obligatorio.");
@@ -17,7 +17,7 @@ final class Validations {
         return clean;
     }
 
-    static int positiveInteger(String value, String field) {
+    public static int positiveInteger(String value, String field) {
         String clean = value == null ? "" : value.trim();
         if (clean.isEmpty()) {
             throw new ValidationException("El campo " + field + " es obligatorio.");

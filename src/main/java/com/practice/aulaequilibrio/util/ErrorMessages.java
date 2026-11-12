@@ -1,4 +1,4 @@
-package com.practice.aulaequilibrio.service;
+package com.practice.aulaequilibrio.util;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.JDBCConnectionException;
