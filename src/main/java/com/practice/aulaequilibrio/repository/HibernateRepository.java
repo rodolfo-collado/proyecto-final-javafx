@@ -1,6 +1,8 @@
 package com.practice.aulaequilibrio.repository;
 
 import com.practice.aulaequilibrio.config.HibernateUtil;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -11,15 +13,11 @@ import java.util.function.Function;
 /**
  * Operaciones CRUD básicas con Hibernate. Cada método abre y cierra su propia sesión.
  */
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class HibernateRepository<T> {
 
     private final Class<T> type;
     private final Function<T, Integer> idGetter;
-
-    protected HibernateRepository(Class<T> type, Function<T, Integer> idGetter) {
-        this.type = type;
-        this.idGetter = idGetter;
-    }
 
     public List<T> findAll(String orderBy) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {

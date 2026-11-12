@@ -8,6 +8,7 @@ module com.practice.aulaequilibrio {
     requires org.hibernate.orm.core;
     requires org.postgresql.jdbc;
     requires io.github.cdimascio.dotenv.java;
+    requires static lombok;
 
     opens com.practice.aulaequilibrio.model to org.hibernate.orm.core;
     opens com.practice.aulaequilibrio.controller to javafx.fxml;

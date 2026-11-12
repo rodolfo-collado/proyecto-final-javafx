@@ -5,9 +5,11 @@ import com.practice.aulaequilibrio.repository.GroupeRepository;
 import com.practice.aulaequilibrio.util.ErrorMessages;
 import com.practice.aulaequilibrio.util.ValidationException;
 import com.practice.aulaequilibrio.util.Validations;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 public class GroupeService {
 
     private static final int MAX_NOMBRE = 40;
@@ -16,10 +18,6 @@ public class GroupeService {
 
     public GroupeService() {
         this(new GroupeRepository());
-    }
-
-    public GroupeService(GroupeRepository repository) {
-        this.repository = repository;
     }
 
     public List<Groupe> listAll() {

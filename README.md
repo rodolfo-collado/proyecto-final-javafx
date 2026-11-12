@@ -12,6 +12,8 @@ Para ver varias ventanas a la vez, abre los módulos y elige **Ventanas → Orga
 
 Se requiere JDK 21 y PostgreSQL. Copia `.env.example` a `.env` y configura `DB_URL`, `DB_USER` y `DB_PASSWORD` para una base existente. El usuario de la base debe poder crear/actualizar tablas, como requiere la configuración Hibernate existente.
 
+Importa el `pom.xml` como proyecto Maven en IntelliJ IDEA. Maven configura el procesador de anotaciones de Lombok para generar los métodos y constructores al compilar.
+
 Si tu base ya contiene aulas de una versión anterior, ejecuta primero `sql/rolando_aulas.sql` en esa base. El script asigna el tipo **General** a las aulas existentes que todavía no tienen tipo y conserva sus datos.
 
 ```bash

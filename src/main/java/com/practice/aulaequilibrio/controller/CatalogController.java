@@ -6,6 +6,7 @@ import com.practice.aulaequilibrio.model.Availability;
 import com.practice.aulaequilibrio.model.Teacher;
 import com.practice.aulaequilibrio.util.Dialogs;
 import com.practice.aulaequilibrio.view.mdi.MdiDesktop;
+import lombok.RequiredArgsConstructor;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -23,6 +24,7 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
+@RequiredArgsConstructor
 public class CatalogController {
     private static final List<String> DAYS = List.of("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo");
     private static final String TEACHER_FORM = "Formulario de docente";
@@ -47,10 +49,6 @@ public class CatalogController {
 
     public CatalogController() {
         this(new CatalogDAO(HibernateUtil.getSessionFactory()));
-    }
-
-    public CatalogController(CatalogDAO dao) {
-        this.dao = dao;
     }
 
     public void attachDesktop(MdiDesktop desktop, String moduleTitle) {

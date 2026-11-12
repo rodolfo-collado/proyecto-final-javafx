@@ -2,6 +2,7 @@ package com.practice.aulaequilibrio.dao;
 
 import com.practice.aulaequilibrio.model.Availability;
 import com.practice.aulaequilibrio.model.Teacher;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -10,10 +11,9 @@ import java.util.List;
 import java.util.function.Function;
 
 /** Cada operación usa su propia sesión y revierte la transacción si falla. */
+@RequiredArgsConstructor
 public final class CatalogDAO {
     private final SessionFactory factory;
-
-    public CatalogDAO(SessionFactory factory) { this.factory = factory; }
 
     private <T> T transaction(Function<Session, T> action) {
         try (Session session = factory.openSession()) {

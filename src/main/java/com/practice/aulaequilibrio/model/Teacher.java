@@ -6,7 +6,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "teacher")
 public class Teacher {
@@ -16,31 +21,10 @@ public class Teacher {
     private Integer id;
 
     @Column(nullable = false, length = 120)
+    @Setter
     private String name;
 
     @Column(unique = true, length = 120)
+    @Setter
     private String email;
-
-    public Teacher() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }
