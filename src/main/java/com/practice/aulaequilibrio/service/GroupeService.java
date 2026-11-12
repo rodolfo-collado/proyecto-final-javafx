@@ -2,6 +2,9 @@ package com.practice.aulaequilibrio.service;
 
 import com.practice.aulaequilibrio.model.Groupe;
 import com.practice.aulaequilibrio.repository.GroupeRepository;
+import com.practice.aulaequilibrio.util.ErrorMessages;
+import com.practice.aulaequilibrio.util.ValidationException;
+import com.practice.aulaequilibrio.util.Validations;
 
 import java.util.List;
 

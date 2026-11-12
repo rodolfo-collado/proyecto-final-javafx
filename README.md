@@ -1,6 +1,12 @@
 # Aula Equilibrio
 
-Aplicación JavaFX con persistencia en PostgreSQL mediante Hibernate. La pantalla principal conecta los catálogos de docentes y disponibilidad, grupos, asignaturas y aulas. El módulo Horarios se abre desde Inicio.
+Aplicación JavaFX con persistencia en PostgreSQL mediante Hibernate. La ventana principal se abre maximizada con el **Dashboard** visible dentro del escritorio MDI. La barra de tareas superior abre Horarios y los catálogos, marca los módulos abiertos y resalta el que está al frente.
+
+Cada módulo se abre maximizado dentro del área de trabajo. Usa **Minimizar** para ocultarlo sin cerrar sus datos y vuelve a seleccionarlo desde la barra. Usa **Restaurar** para mover la ventana desde su barra de título y cambiar su tamaño desde la esquina inferior derecha.
+
+También puedes arrastrar una ventana directamente desde la barra de título. Al acercarla a un lateral aparece una vista previa de media pantalla. En una esquina ocupa un cuarto del escritorio y en el borde superior se maximiza. Suelta para aplicar el ajuste o arrástrala de nuevo para recuperar su tamaño libre.
+
+Para ver varias ventanas a la vez, abre los módulos y elige **Ventanas → Organizar en cascada**. Se acomodan superpuestas con sus barras de título visibles.
 
 ## Ejecutar
 
@@ -16,15 +22,15 @@ Si tu base ya contiene aulas de una versión anterior, ejecuta primero `sql/rola
 
 Al abrir la aplicación, Hibernate prepara las tablas y ejecuta `sql/demo_seed.sql` en la base configurada. En una base nueva aparecen tres docentes, tres grupos, tres asignaturas, tres aulas y un horario con seis asignaciones.
 
-La semilla agrega filas de ejemplo que falten y conserva los registros existentes. Abre **Inicio → Abrir horarios** y selecciona **Demo · Semana académica** para probar el filtro por grupo.
+La semilla agrega filas de ejemplo que falten y conserva los registros existentes. Abre **Horarios** desde la barra superior y selecciona **Demo · Semana académica** para probar el filtro por grupo.
 
-En **Aulas**, crea primero un tipo de aula y luego registra un aula con ese tipo. Al volver a **Inicio → Horarios**, el aula aparecerá entre las opciones de una asignación.
+En **Aulas**, crea primero un tipo de aula y luego registra un aula con ese tipo. En **Horarios**, el aula aparecerá entre las opciones de una asignación.
 
-En **Docentes y disponibilidad**, usa **Nuevo** para limpiar la selección y **Guardar** para crear o actualizar. Selecciona una fila para editarla. La eliminación requiere confirmación.
+En **Docentes y disponibilidad**, pulsa **Nuevo docente** o selecciona una fila y pulsa **Editar**. El formulario se abre en una ventana interna con su propia entrada en la barra de tareas. Al seleccionar un docente, el panel lateral muestra sus bloques.
 
 - El nombre es obligatorio y admite hasta 120 caracteres. El correo es opcional y único.
 - Cada bloque exige un docente existente, un día de lunes a domingo y un número entero mayor que cero. No se impone un máximo de bloques porque el requisito no lo define.
-- **Consultar** lista los bloques del docente elegido; **Ver todos** restablece la lista completa.
+- Usa **Nuevo bloque** para preparar un alta. Para editar o eliminar, selecciona un bloque en el panel lateral.
 - Un docente con bloques asociados no se puede eliminar. La pantalla explica que primero deben eliminarse o reasignarse sus bloques. La clave foránea también protege la relación en la base.
 
 La consulta está en `CatalogDAO.listAvailability`:
@@ -41,7 +47,7 @@ Cada operación abre una sesión, confirma su transacción y revierte los cambio
 
 Puedes crearlos desde la pantalla o ejecutar `sql/rodolfo_demo.sql` en tu base PostgreSQL después del primer inicio. El script agrega a Ana Pérez con lunes/bloque 2 y miércoles/bloque 4, y a Luis López con martes/bloque 6; puede repetirse sin duplicar esos ejemplos.
 
-1. Pulsa **Actualizar** y consulta a Ana: deben aparecer únicamente sus dos bloques.
+1. Pulsa **Actualizar** y selecciona a Ana en la tabla principal. Deben aparecer únicamente sus dos bloques.
 2. Selecciona su bloque 2, cambia el día a viernes y el número a 8; guarda y comprueba el resultado.
 3. Selecciona a Ana e intenta eliminarla: debe aparecer el mensaje de bloques asociados.
 4. Elimina uno de sus bloques y comprueba que desaparezca. Consulta a Luis y verifica que su bloque siga intacto.

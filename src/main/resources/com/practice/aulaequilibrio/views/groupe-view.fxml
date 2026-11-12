@@ -11,10 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.practice.aulaequilibrio.controller.GroupeController">
-    <padding>
-        <Insets bottom="20" left="22" right="22" top="18"/>
-    </padding>
+            fx:controller="com.practice.aulaequilibrio.controller.GroupeController" styleClass="module-page">
 
     <top>
         <Label text="Grupos" styleClass="page-title">

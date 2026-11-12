@@ -2,6 +2,9 @@ package com.practice.aulaequilibrio.service;
 
 import com.practice.aulaequilibrio.model.Subject;
 import com.practice.aulaequilibrio.repository.SubjectRepository;
+import com.practice.aulaequilibrio.util.ErrorMessages;
+import com.practice.aulaequilibrio.util.ValidationException;
+import com.practice.aulaequilibrio.util.Validations;
 
 import java.util.List;
 import java.util.Locale;

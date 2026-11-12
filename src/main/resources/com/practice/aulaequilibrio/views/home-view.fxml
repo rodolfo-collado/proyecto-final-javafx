@@ -1,91 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.practice.aulaequilibrio.view.mdi.MdiDesktop?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
+<BorderPane fx:id="dashboard" xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.practice.aulaequilibrio.controller.HomeController"
             stylesheets="@../styles/aula.css">
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="13" styleClass="masthead">
-            <Label text="AE" styleClass="brand-mark"/>
-            <VBox spacing="2">
-                <Label text="Aula Equilibrio" styleClass="brand-title"/>
-                <Label text="Planificación académica" styleClass="brand-subtitle"/>
-            </VBox>
-        </HBox>
-    </top>
-    <center>
-        <TabPane fx:id="navigation" tabClosingPolicy="UNAVAILABLE" styleClass="navigation">
-            <Tab text="Inicio">
-                <VBox spacing="19" styleClass="home-page">
-                    <VBox spacing="10" styleClass="hero">
-                        <Label text="PLANIFICADOR SEMANAL" styleClass="hero-caption"/>
-                        <Label text="Organiza tus horarios" styleClass="hero-title"/>
-                        <Label text="Arma versiones, asigna aulas y detecta cruces de docentes, grupos y espacios."
-                               wrapText="true" styleClass="hero-description"/>
-                        <Button text="Abrir horarios" onAction="#openSchedules" styleClass="hero-action"/>
-                    </VBox>
-                    <Label text="Catálogos" styleClass="page-title"/>
-                    <HBox spacing="14">
-                        <Button onAction="#openCatalog" userData="teachersTab" maxWidth="Infinity"
-                                HBox.hgrow="ALWAYS" styleClass="catalog-link">
-                            <graphic>
-                                <VBox spacing="5">
-                                    <Label text="Docentes y disponibilidad" styleClass="card-title"/>
-                                    <Label text="Administra docentes y sus bloques semanales." styleClass="muted"/>
-                                </VBox>
-                            </graphic>
-                        </Button>
-                        <Button onAction="#openCatalog" userData="groupsTab" maxWidth="Infinity"
-                                HBox.hgrow="ALWAYS" styleClass="catalog-link">
-                            <graphic>
-                                <VBox spacing="5">
-                                    <Label text="Grupos" styleClass="card-title"/>
-                                    <Label text="Registra grupos y cantidad de estudiantes." styleClass="muted"/>
-                                </VBox>
-                            </graphic>
-                        </Button>
-                    </HBox>
-                    <HBox spacing="14">
-                        <Button onAction="#openCatalog" userData="subjectsTab" maxWidth="Infinity"
-                                HBox.hgrow="ALWAYS" styleClass="catalog-link">
-                            <graphic>
-                                <VBox spacing="5">
-                                    <Label text="Asignaturas" styleClass="card-title"/>
-                                    <Label text="Gestiona códigos y sesiones requeridas." styleClass="muted"/>
-                                </VBox>
-                            </graphic>
-                        </Button>
-                        <Button onAction="#openCatalog" userData="roomsTab" maxWidth="Infinity"
-                                HBox.hgrow="ALWAYS" styleClass="catalog-link">
-                            <graphic>
-                                <VBox spacing="5">
-                                    <Label text="Aulas" styleClass="card-title"/>
-                                    <Label text="Organiza espacios, capacidad y tipos de aula." styleClass="muted"/>
-                                </VBox>
-                            </graphic>
-                        </Button>
-                    </HBox>
+        <VBox>
+            <HBox alignment="CENTER_LEFT" spacing="13" styleClass="masthead">
+                <Label text="AE" styleClass="brand-mark"/>
+                <VBox spacing="2">
+                    <Label text="Aula Equilibrio" styleClass="brand-title"/>
+                    <Label text="Planificación académica" styleClass="brand-subtitle"/>
                 </VBox>
-            </Tab>
-            <Tab fx:id="teachersTab" text="Docentes y disponibilidad">
-                <fx:include source="catalog-view.fxml"/>
-            </Tab>
-            <Tab fx:id="groupsTab" text="Grupos">
-                <fx:include source="groupe-view.fxml"/>
-            </Tab>
-            <Tab fx:id="subjectsTab" text="Asignaturas">
-                <fx:include source="subject-view.fxml"/>
-            </Tab>
-            <Tab fx:id="roomsTab" text="Aulas">
-                <fx:include source="classroom-view.fxml"/>
-            </Tab>
-        </TabPane>
+            </HBox>
+            <ToolBar fx:id="taskbar" styleClass="mdi-menu">
+                <Button text="Dashboard" onAction="#showHome"/>
+                <Button text="Horarios" onAction="#openSchedules"/>
+                <Button text="Docentes y disponibilidad" accessibleText="Docentes y disponibilidad"
+                        userData="catalog-view.fxml" onAction="#openCatalog"/>
+                <Button text="Grupos" accessibleText="Grupos" userData="groupe-view.fxml" onAction="#openCatalog"/>
+                <Button text="Asignaturas" accessibleText="Asignaturas" userData="subject-view.fxml"
+                        onAction="#openCatalog"/>
+                <Button text="Aulas" accessibleText="Aulas" userData="classroom-view.fxml" onAction="#openCatalog"/>
+                <MenuButton text="Ventanas">
+                    <items>
+                        <MenuItem text="Organizar en cascada" onAction="#arrangeWindows"/>
+                    </items>
+                </MenuButton>
+                <HBox fx:id="popupTasks" spacing="6"/>
+            </ToolBar>
+        </VBox>
+    </top>
+    <fx:define>
+        <VBox fx:id="home" spacing="19" styleClass="home-page">
+            <VBox spacing="10" styleClass="hero">
+                <Label text="PLANIFICADOR SEMANAL" styleClass="hero-caption"/>
+                <Label text="Organiza tus horarios" styleClass="hero-title"/>
+                <Label text="Arma versiones, asigna aulas y detecta cruces de docentes, grupos y espacios."
+                       wrapText="true" styleClass="hero-description"/>
+                <Button text="Abrir horarios" onAction="#openSchedules" styleClass="hero-action"/>
+            </VBox>
+            <Label text="Catálogos" styleClass="page-title"/>
+            <HBox spacing="14">
+                <Button onAction="#openCatalog" userData="catalog-view.fxml" accessibleText="Docentes y disponibilidad" maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS" styleClass="catalog-link">
+                    <graphic>
+                        <VBox spacing="5">
+                            <Label text="Docentes y disponibilidad" styleClass="card-title"/>
+                            <Label text="Administra docentes y sus bloques semanales." styleClass="muted"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+                <Button onAction="#openCatalog" userData="groupe-view.fxml" accessibleText="Grupos" maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS" styleClass="catalog-link">
+                    <graphic>
+                        <VBox spacing="5">
+                            <Label text="Grupos" styleClass="card-title"/>
+                            <Label text="Registra grupos y cantidad de estudiantes." styleClass="muted"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+            </HBox>
+            <HBox spacing="14">
+                <Button onAction="#openCatalog" userData="subject-view.fxml" accessibleText="Asignaturas" maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS" styleClass="catalog-link">
+                    <graphic>
+                        <VBox spacing="5">
+                            <Label text="Asignaturas" styleClass="card-title"/>
+                            <Label text="Gestiona códigos y sesiones requeridas." styleClass="muted"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+                <Button onAction="#openCatalog" userData="classroom-view.fxml" accessibleText="Aulas" maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS" styleClass="catalog-link">
+                    <graphic>
+                        <VBox spacing="5">
+                            <Label text="Aulas" styleClass="card-title"/>
+                            <Label text="Organiza espacios, capacidad y tipos de aula." styleClass="muted"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+            </HBox>
+        </VBox>
+    </fx:define>
+    <center>
+        <MdiDesktop fx:id="desktop"/>
     </center>
 </BorderPane>

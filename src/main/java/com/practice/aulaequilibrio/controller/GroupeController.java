@@ -2,6 +2,8 @@ package com.practice.aulaequilibrio.controller;
 
 import com.practice.aulaequilibrio.model.Groupe;
 import com.practice.aulaequilibrio.service.GroupeService;
+import com.practice.aulaequilibrio.util.Dialogs;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -38,7 +40,7 @@ public class GroupeController {
         cantidadColumn.setCellValueFactory(cell ->
                 new SimpleObjectProperty<>(cell.getValue().getCantidadEstudiantes()));
         table.getSelectionModel().selectedItemProperty().addListener((obs, old, selected) -> fillForm(selected));
-        refresh();
+        Platform.runLater(this::refresh);
     }
 
     @FXML
@@ -46,7 +48,7 @@ public class GroupeController {
         try {
             table.setItems(FXCollections.observableArrayList(service.listAll()));
         } catch (RuntimeException exception) {
-            Dialogs.error("No se pudieron cargar los grupos", exception);
+            Dialogs.error(table, "No se pudieron cargar los grupos", exception);
         }
         clearForm();
     }
@@ -64,9 +66,9 @@ public class GroupeController {
             Groupe saved = service.save(editingId, nombreField.getText(), cantidadField.getText());
             refresh();
             selectById(saved.getId());
-            Dialogs.info("Grupos", creating ? "Grupo creado correctamente." : "Grupo actualizado correctamente.");
+            Dialogs.info(table, "Grupos", creating ? "Grupo creado correctamente." : "Grupo actualizado correctamente.");
         } catch (RuntimeException exception) {
-            Dialogs.error("No se pudo guardar el grupo", exception);
+            Dialogs.error(table, "No se pudo guardar el grupo", exception);
         }
     }
 
@@ -76,14 +78,14 @@ public class GroupeController {
         if (selected == null) {
             return;
         }
-        if (!Dialogs.confirm("Eliminar grupo", "¿Desea eliminar el grupo \"" + selected.getNombre() + "\"?")) {
+        if (!Dialogs.confirm(table, "Eliminar grupo", "¿Desea eliminar el grupo \"" + selected.getNombre() + "\"?")) {
             return;
         }
         try {
             service.delete(selected.getId());
             refresh();
         } catch (RuntimeException exception) {
-            Dialogs.error("No se pudo eliminar el grupo", exception);
+            Dialogs.error(table, "No se pudo eliminar el grupo", exception);
             refresh();
         }
     }

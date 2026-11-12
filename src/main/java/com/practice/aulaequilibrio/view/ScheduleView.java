@@ -5,6 +5,7 @@ import com.practice.aulaequilibrio.model.ScheduleVersion;
 import com.practice.aulaequilibrio.repository.ScheduleRepository;
 import com.practice.aulaequilibrio.repository.ScheduleRepository.Option;
 import com.practice.aulaequilibrio.repository.ScheduleRepository.Placement;
+import com.practice.aulaequilibrio.util.Dialogs;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -40,8 +41,7 @@ public class ScheduleView extends BorderPane {
 
     public ScheduleView() {
         getStylesheets().add(STYLESHEET);
-        getStyleClass().add("schedule-page");
-        setPadding(new Insets(20));
+        getStyleClass().addAll("schedule-page", "module-page");
         versions.setPromptText("Elige una versión");
         versions.setConverter(display(version -> version.getName() + " · " + version.getCreatedOn()));
         versions.setPrefWidth(280);
@@ -201,7 +201,6 @@ public class ScheduleView extends BorderPane {
 
     private void showEditor(String title, GridPane fields, Runnable save) {
         Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.initOwner(getScene().getWindow());
         dialog.setTitle(title);
         Label error = new Label();
         error.setWrapText(true);
@@ -219,14 +218,13 @@ public class ScheduleView extends BorderPane {
                 event.consume();
             }
         });
-        dialog.showAndWait();
+        Dialogs.show(this, dialog);
     }
 
     private boolean confirm(String question) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, question, ButtonType.OK, ButtonType.CANCEL);
-        alert.initOwner(getScene().getWindow());
         alert.getDialogPane().getStylesheets().add(STYLESHEET);
-        return alert.showAndWait().filter(ButtonType.OK::equals).isPresent();
+        return Dialogs.show(this, alert).filter(ButtonType.OK::equals).isPresent();
     }
 
     private Button button(String label, Runnable action) {

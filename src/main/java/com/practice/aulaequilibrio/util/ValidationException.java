@@ -1,4 +1,4 @@
-package com.practice.aulaequilibrio.service;
+package com.practice.aulaequilibrio.util;
 
 /**
  * Error con un mensaje legible que se puede mostrar directamente al usuario.

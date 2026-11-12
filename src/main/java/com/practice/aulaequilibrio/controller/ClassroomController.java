@@ -1,6 +1,7 @@
 package com.practice.aulaequilibrio.controller;
 import com.practice.aulaequilibrio.dao.*;
 import com.practice.aulaequilibrio.model.*;
+import com.practice.aulaequilibrio.util.Dialogs;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -69,7 +70,7 @@ public class ClassroomController {
                 value.setCodigo(normalized);value.setCapacidad(count);value.setType(type.getValue());
                 save(dialog,feedback,() -> {try{classrooms.guardar(value);}catch(RuntimeException ex){value.setCodigo(oldCode);value.setCapacidad(oldCapacity);value.setType(oldType);throw ex;}});
             }catch(Exception ex){feedback.setText(message(ex));}
-        });dialog.showAndWait();
+        });Dialogs.show(root, dialog);
     }
     @FXML private void addType(){editType(null);}
     @FXML private void editSelectedType(){ClassroomType selected=typeTable.getSelectionModel().getSelectedItem();if(selected==null){info("Seleccione un tipo.");return;}editType(selected);}
@@ -79,7 +80,7 @@ public class ClassroomController {
             event.consume();String text=name.getText().trim();if(text.isBlank()||text.length()>60){feedback.setText("Ingrese un nombre de hasta 60 caracteres.");return;}
             ClassroomType value=selected==null?new ClassroomType():selected;String old=value.getName();value.setName(text);
             save(dialog,feedback,() -> {try{types.guardar(value);}catch(RuntimeException ex){value.setName(old);throw ex;}});
-        });dialog.showAndWait();
+        });Dialogs.show(root, dialog);
     }
     private void save(Dialog<Void> dialog,Label feedback,Runnable operation) {
         dialog.getDialogPane().setDisable(true);feedback.setText("Guardando…");Thread thread=new Thread(() -> {
@@ -90,14 +91,14 @@ public class ClassroomController {
     @FXML private void deleteClassroom(){Classroom value=classroomTable.getSelectionModel().getSelectedItem();if(value==null){info("Seleccione un aula.");return;}remove("¿Eliminar el aula "+value.getCodigo()+"?",() -> classrooms.eliminar(value));}
     @FXML private void deleteType(){ClassroomType value=typeTable.getSelectionModel().getSelectedItem();if(value==null){info("Seleccione un tipo.");return;}remove("¿Eliminar el tipo "+value.getName()+"?",() -> types.eliminar(value));}
     private void remove(String question,Runnable operation) {
-        Alert confirm=new Alert(Alert.AlertType.CONFIRMATION,question,ButtonType.OK,ButtonType.CANCEL);confirm.initOwner(root.getScene().getWindow());confirm.setHeaderText("Confirmar eliminación");if(confirm.showAndWait().orElse(ButtonType.CANCEL)!=ButtonType.OK)return;
+        Alert confirm=new Alert(Alert.AlertType.CONFIRMATION,question,ButtonType.OK,ButtonType.CANCEL);confirm.setHeaderText("Confirmar eliminación");if(Dialogs.show(root, confirm).orElse(ButtonType.CANCEL)!=ButtonType.OK)return;
         root.setDisable(true);Thread thread=new Thread(() -> {try{operation.run();Platform.runLater(this::refresh);}catch(Exception ex){Platform.runLater(() -> {root.setDisable(false);error(ex);});}},"eliminar-aulas");thread.setDaemon(true);thread.start();
     }
-    private Dialog<Void> dialog(String title){Dialog<Void> dialog=new Dialog<>();dialog.initOwner(root.getScene().getWindow());dialog.setTitle(title);dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK,ButtonType.CANCEL);((Button)dialog.getDialogPane().lookupButton(ButtonType.OK)).setText("Guardar");dialog.getDialogPane().setPrefWidth(460);return dialog;}
+    private Dialog<Void> dialog(String title){Dialog<Void> dialog=new Dialog<>();dialog.setTitle(title);dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK,ButtonType.CANCEL);((Button)dialog.getDialogPane().lookupButton(ButtonType.OK)).setText("Guardar");dialog.getDialogPane().setPrefWidth(460);return dialog;}
     private GridPane grid(){GridPane grid=new GridPane();grid.setHgap(16);grid.setVgap(14);return grid;}
     private Label feedback(){Label label=new Label("Todos los campos son obligatorios.");label.setWrapText(true);label.setMaxWidth(400);return label;}
-    private void info(String text){Alert alert=new Alert(Alert.AlertType.INFORMATION,text,ButtonType.OK);alert.setHeaderText(null);alert.initOwner(root.getScene().getWindow());alert.showAndWait();}
-    private void error(Exception ex){Alert alert=new Alert(Alert.AlertType.ERROR,message(ex),ButtonType.OK);alert.setHeaderText("No se completó la operación");alert.initOwner(root.getScene().getWindow());alert.showAndWait();}
+    private void info(String text){Alert alert=new Alert(Alert.AlertType.INFORMATION,text,ButtonType.OK);alert.setHeaderText(null);Dialogs.show(root, alert);}
+    private void error(Exception ex){Alert alert=new Alert(Alert.AlertType.ERROR,message(ex),ButtonType.OK);alert.setHeaderText("No se completó la operación");Dialogs.show(root, alert);}
     private String message(Exception ex){
         for(Throwable cause=ex;cause!=null;cause=cause.getCause()) {
             if(cause instanceof IllegalArgumentException)return cause.getMessage();

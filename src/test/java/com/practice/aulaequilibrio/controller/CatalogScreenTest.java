@@ -3,6 +3,7 @@ package com.practice.aulaequilibrio.controller;
 import com.practice.aulaequilibrio.dao.CatalogDAO;
 import com.practice.aulaequilibrio.dao.CatalogDAOTest;
 import com.practice.aulaequilibrio.model.Availability;
+import com.practice.aulaequilibrio.view.mdi.MdiDesktop;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,7 +22,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class CatalogScreenTest {
-    private Parent root;
+    private static final String CATALOG = "Docentes y disponibilidad";
+    private static final String TEACHER_FORM = "Formulario de docente";
+    private MdiDesktop root;
 
     @Test void userCanCreateFilterEditDeleteAndSeeReferenceWarning() throws Exception {
         assumeTrue(System.getenv("DISPLAY") != null, "La prueba visual requiere un servidor gráfico.");
@@ -32,10 +35,15 @@ class CatalogScreenTest {
             Stage stage = fx(() -> {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/practice/aulaequilibrio/views/catalog-view.fxml"));
                 loader.setControllerFactory(type -> new CatalogController(dao));
-                root = loader.load();
+                Parent catalog = loader.load();
+                root = new MdiDesktop();
+                loader.<CatalogController>getController().attachDesktop(root, CATALOG);
                 Stage window = new Stage();
                 window.setScene(new Scene(root, 1040, 740));
                 window.show();
+                root.open(CATALOG, catalog, 1000, 660, true);
+                root.applyCss();
+                root.layout();
                 return window;
             });
             try {
@@ -44,8 +52,7 @@ class CatalogScreenTest {
                 teacher("Luis López");
                 block(0, 0, "2");
                 block(1, 1, "6");
-                fx(() -> { combo("filterTeacher").getSelectionModel().select(0); click("Consultar"); return null; });
-                idle();
+                selectTeacher(0);
                 assertEquals(1, fx(() -> table("blocks").getItems().size()));
                 Availability shown = fx(() -> (Availability) table("blocks").getItems().getFirst());
                 assertEquals("Ana Pérez", shown.getTeacher().getName());
@@ -72,8 +79,7 @@ class CatalogScreenTest {
                 });
                 idle();
                 assertEquals(0, fx(() -> table("blocks").getItems().size()));
-                fx(() -> { click("Ver todos"); return null; });
-                idle();
+                selectTeacher(1);
                 assertEquals(1, fx(() -> table("blocks").getItems().size()));
                 assertEquals("Luis López", fx(() -> ((Availability) table("blocks").getItems().getFirst()).getTeacher().getName()));
             } finally { fx(() -> { stage.close(); return null; }); }
@@ -81,12 +87,28 @@ class CatalogScreenTest {
     }
 
     private void teacher(String name) throws Exception {
-        fx(() -> { field("name").setText(name); click("Guardar docente"); return null; });
+        fx(() -> {
+            click("Nuevo docente");
+            assertEquals(TEACHER_FORM, root.activeTitleProperty().get());
+            root.applyCss();
+            root.layout();
+            root.lookupAll(".text-field").stream().filter(n -> n instanceof TextField field
+                    && "Nombre del docente".equals(field.getPromptText())).map(TextField.class::cast)
+                    .findFirst().orElseThrow().setText(name);
+            click("Guardar docente");
+            return null;
+        });
+        idle();
+        assertFalse(fx(() -> root.isOpen(TEACHER_FORM)));
+    }
+    private void selectTeacher(int index) throws Exception {
+        fx(() -> { table("teachers").getSelectionModel().select(index); return null; });
         idle();
     }
+
     private void block(int teacher, int day, String number) throws Exception {
+        selectTeacher(teacher);
         fx(() -> {
-            combo("blockTeacher").getSelectionModel().select(teacher);
             combo("day").getSelectionModel().select(day);
             field("blockNumber").setText(number);
             click("Guardar bloque"); return null;

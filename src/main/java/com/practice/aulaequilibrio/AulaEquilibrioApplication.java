@@ -28,6 +28,7 @@ public class AulaEquilibrioApplication extends Application {
         stage.setMinWidth(1000);
         stage.setMinHeight(720);
         stage.setScene(scene);
+        stage.setMaximized(true);
         stage.show();
     }
 

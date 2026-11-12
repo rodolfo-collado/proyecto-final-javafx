@@ -2,8 +2,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.practice.aulaequilibrio.controller.ClassroomController">
- <padding><Insets top="24" right="24" bottom="20" left="24"/></padding>
+<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.practice.aulaequilibrio.controller.ClassroomController" styleClass="module-page">
  <top><VBox spacing="8"><Label text="Aulas y tipos de aula" styleClass="page-title"/><Region prefHeight="10"/></VBox></top>
  <center><TabPane tabClosingPolicy="UNAVAILABLE">
   <tabs>

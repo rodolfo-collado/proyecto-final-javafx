@@ -2,6 +2,8 @@ package com.practice.aulaequilibrio.controller;
 
 import com.practice.aulaequilibrio.model.Subject;
 import com.practice.aulaequilibrio.service.SubjectService;
+import com.practice.aulaequilibrio.util.Dialogs;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -43,7 +45,7 @@ public class SubjectController {
         sesionesColumn.setCellValueFactory(cell ->
                 new SimpleObjectProperty<>(cell.getValue().getSesionesRequeridas()));
         table.getSelectionModel().selectedItemProperty().addListener((obs, old, selected) -> fillForm(selected));
-        refresh();
+        Platform.runLater(this::refresh);
     }
 
     @FXML
@@ -51,7 +53,7 @@ public class SubjectController {
         try {
             table.setItems(FXCollections.observableArrayList(service.listAll()));
         } catch (RuntimeException exception) {
-            Dialogs.error("No se pudieron cargar las asignaturas", exception);
+            Dialogs.error(table, "No se pudieron cargar las asignaturas", exception);
         }
         clearForm();
     }
@@ -70,10 +72,10 @@ public class SubjectController {
                     editingId, codigoField.getText(), nombreField.getText(), sesionesField.getText());
             refresh();
             selectById(saved.getId());
-            Dialogs.info("Asignaturas",
+            Dialogs.info(table, "Asignaturas",
                     creating ? "Asignatura creada correctamente." : "Asignatura actualizada correctamente.");
         } catch (RuntimeException exception) {
-            Dialogs.error("No se pudo guardar la asignatura", exception);
+            Dialogs.error(table, "No se pudo guardar la asignatura", exception);
         }
     }
 
@@ -83,7 +85,7 @@ public class SubjectController {
         if (selected == null) {
             return;
         }
-        if (!Dialogs.confirm("Eliminar asignatura",
+        if (!Dialogs.confirm(table, "Eliminar asignatura",
                 "¿Desea eliminar la asignatura \"" + selected + "\"?")) {
             return;
         }
@@ -91,7 +93,7 @@ public class SubjectController {
             service.delete(selected.getId());
             refresh();
         } catch (RuntimeException exception) {
-            Dialogs.error("No se pudo eliminar la asignatura", exception);
+            Dialogs.error(table, "No se pudo eliminar la asignatura", exception);
             refresh();
         }
     }

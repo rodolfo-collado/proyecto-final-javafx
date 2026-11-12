@@ -47,8 +47,66 @@
     -fx-font-size: 12px;
 }
 
-.navigation > .tab-header-area {
-    -fx-padding: 0 20;
+.mdi-menu {
+    -fx-background-color: -aula-surface;
+    -fx-border-color: transparent transparent -aula-border transparent;
+    -fx-padding: 8 20;
+}
+
+.mdi-menu .button {
+    -fx-border-width: 1 1 3 1;
+}
+
+.mdi-menu .button:module-open {
+    -fx-border-color: transparent transparent -aula-accent transparent;
+}
+
+.mdi-menu .button:module-active {
+    -fx-background-color: -aula-accent;
+    -fx-text-fill: white;
+}
+
+.mdi-menu .button:focused {
+    -fx-border-color: -aula-accent;
+}
+
+.mdi-menu .button:module-active:focused {
+    -fx-border-color: #a5dccc;
+}
+
+.mdi-desktop {
+    -fx-background-color: #dce6ee;
+}
+
+.mdi-snap-preview {
+    -fx-fill: rgba(18, 108, 99, 0.18);
+    -fx-stroke: -aula-accent;
+    -fx-stroke-width: 2;
+    -fx-stroke-type: inside;
+}
+
+.mdi-window {
+    -fx-background-color: -aula-bg;
+    -fx-border-color: -aula-border;
+}
+
+.mdi-title-bar {
+    -fx-background-color: -aula-navy;
+    -fx-padding: 8 12;
+}
+
+.mdi-title-bar .button {
+    -fx-cursor: hand;
+}
+
+.mdi-caption {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.mdi-resize-grip {
+    -fx-padding: 0 5 3 8;
+    -fx-text-fill: -aula-muted;
 }
 
 .tab-pane > .tab-header-area > .tab-header-background {
@@ -111,6 +169,25 @@
 .page-title {
     -fx-font-size: 22px;
     -fx-font-weight: bold;
+}
+
+.module-page {
+    -fx-padding: 18 22 20;
+}
+
+.module-form {
+    -fx-padding: 20;
+    -fx-background-color: -aula-surface;
+}
+
+.module-split {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.module-split > .split-pane-divider {
+    -fx-background-color: transparent;
+    -fx-padding: 0 6;
 }
 
 .card-title {
