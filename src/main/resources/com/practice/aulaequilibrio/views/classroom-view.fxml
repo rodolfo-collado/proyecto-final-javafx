@@ -1,16 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.geometry.Insets?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.practice.aulaequilibrio.controller.ClassroomController" styleClass="module-page">
- <top><VBox spacing="8"><Label text="Aulas y tipos de aula" styleClass="page-title"/><Region prefHeight="10"/></VBox></top>
- <center><TabPane tabClosingPolicy="UNAVAILABLE">
-  <tabs>
-   <Tab text="Aulas"><BorderPane><top><HBox spacing="10" alignment="CENTER_LEFT"><padding><Insets top="18" bottom="16"/></padding><Button text="Agregar aula" onAction="#addClassroom" styleClass="primary"/><Button text="Editar aula" onAction="#editSelectedClassroom"/><Button text="Eliminar aula" onAction="#deleteClassroom" styleClass="danger"/><Region HBox.hgrow="ALWAYS"/><Label text="Filtrar por tipo:"/><ComboBox fx:id="typeFilter" promptText="Todos los tipos" onAction="#filter" prefWidth="180"/><Button text="Actualizar" onAction="#refresh"/></HBox></top>
-   <center><TableView fx:id="classroomTable"><columns><TableColumn fx:id="codeColumn" text="Código" prefWidth="180"/><TableColumn fx:id="capacityColumn" text="Capacidad" prefWidth="160"/><TableColumn fx:id="classroomTypeColumn" text="Tipo de aula" prefWidth="420"/></columns></TableView></center></BorderPane></Tab>
-   <Tab text="Tipos de aula"><BorderPane><top><HBox spacing="10"><padding><Insets top="18" bottom="16"/></padding><Button text="Agregar tipo" onAction="#addType" styleClass="primary"/><Button text="Editar tipo" onAction="#editSelectedType"/><Button text="Eliminar tipo" onAction="#deleteType" styleClass="danger"/><Button text="Actualizar" onAction="#refresh"/></HBox></top>
-   <center><TableView fx:id="typeTable"><columns><TableColumn fx:id="typeNameColumn" text="Nombre del tipo" prefWidth="760"/></columns></TableView></center></BorderPane></Tab>
-  </tabs>
- </TabPane></center>
- <bottom><Label fx:id="status" text="Cargando…" styleClass="muted"><padding><Insets top="16"/></padding></Label></bottom>
+
+<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.practice.aulaequilibrio.controller.ClassroomController" styleClass="module-page">
+    <center>
+        <VBox spacing="12">
+            <Label text="Aulas y tipos de aula" styleClass="page-title"/>
+            <SplitPane dividerPositions="0.65" VBox.vgrow="ALWAYS" styleClass="module-split">
+                <VBox spacing="10" minWidth="285" styleClass="panel">
+                    <Label text="Aulas" styleClass="card-title"/>
+                    <Label fx:id="classroomScope" text="Todos los tipos" styleClass="muted"/>
+                    <FlowPane hgap="7" vgap="6">
+                        <Button text="Nueva aula" onAction="#addClassroom" styleClass="primary"/>
+                        <Button fx:id="editClassroomButton" text="Editar" onAction="#editSelectedClassroom"/>
+                        <Button fx:id="deleteClassroomButton" text="Eliminar aula" onAction="#deleteClassroom" styleClass="danger"/>
+                        <Button text="Actualizar" onAction="#refresh"/>
+                    </FlowPane>
+                    <TableView fx:id="classroomTable" VBox.vgrow="ALWAYS">
+                        <placeholder><Label text="No hay aulas para esta selección."/></placeholder>
+                        <columns>
+                            <TableColumn fx:id="codeColumn" text="Código" prefWidth="140"/>
+                            <TableColumn fx:id="capacityColumn" text="Capacidad" prefWidth="110"/>
+                            <TableColumn fx:id="classroomTypeColumn" text="Tipo de aula" prefWidth="210"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+                <VBox spacing="10" minWidth="255" styleClass="panel">
+                    <Label text="Tipos de aula" styleClass="card-title"/>
+                    <Label text="Selecciona un tipo para filtrar las aulas." wrapText="true" styleClass="muted"/>
+                    <FlowPane hgap="7" vgap="6">
+                        <Button text="Nuevo tipo" onAction="#addType" styleClass="primary"/>
+                        <Button fx:id="editTypeButton" text="Editar" onAction="#editSelectedType"/>
+                        <Button fx:id="deleteTypeButton" text="Eliminar tipo" onAction="#deleteType" styleClass="danger"/>
+                        <Button fx:id="showAllButton" text="Todos los tipos" onAction="#showAllClassrooms"/>
+                    </FlowPane>
+                    <TableView fx:id="typeTable" VBox.vgrow="ALWAYS">
+                        <placeholder><Label text="No hay tipos de aula registrados."/></placeholder>
+                        <columns>
+                            <TableColumn fx:id="typeNameColumn" text="Nombre" prefWidth="250"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </SplitPane>
+            <Label fx:id="status" text="Cargando aulas…" wrapText="true" styleClass="muted"/>
+        </VBox>
+    </center>
 </BorderPane>

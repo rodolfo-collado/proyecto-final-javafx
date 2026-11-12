@@ -16,8 +16,8 @@ public class ClassroomController {
     @FXML private TableView<ClassroomType> typeTable;
     @FXML private TableColumn<Classroom,String> codeColumn,capacityColumn,classroomTypeColumn;
     @FXML private TableColumn<ClassroomType,String> typeNameColumn;
-    @FXML private ComboBox<ClassroomType> typeFilter;
-    @FXML private Label status;
+    @FXML private Label status, classroomScope;
+    @FXML private Button editClassroomButton, deleteClassroomButton, editTypeButton, deleteTypeButton, showAllButton;
     private final ClassroomDAO classrooms=new ClassroomDAO();
     private final ClassroomTypeDAO types=new ClassroomTypeDAO();
     private boolean refreshing;
@@ -27,36 +27,100 @@ public class ClassroomController {
         capacityColumn.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getCapacidad().toString()));
         classroomTypeColumn.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getType().getName()));
         typeNameColumn.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
-        classroomTable.setPlaceholder(new Label("Agregue un aula para comenzar."));typeTable.setPlaceholder(new Label("Agregue primero un tipo, por ejemplo Laboratorio."));refresh();
+        var noRoom = classroomTable.getSelectionModel().selectedItemProperty().isNull();
+        editClassroomButton.disableProperty().bind(noRoom);
+        deleteClassroomButton.disableProperty().bind(noRoom);
+        var noType = typeTable.getSelectionModel().selectedItemProperty().isNull();
+        editTypeButton.disableProperty().bind(noType);
+        deleteTypeButton.disableProperty().bind(noType);
+        showAllButton.disableProperty().bind(noType);
+        typeTable.getSelectionModel().selectedItemProperty().addListener((observable, previous, selected) -> {
+            if (!refreshing) {
+                loadClassrooms(selected);
+            }
+        });
+        refresh();
     }
+
     @FXML private void refresh() {
-        root.setDisable(true);status.setText("Cargando…");
-        Thread thread=new Thread(() -> {
+        ClassroomType selected = typeTable.getSelectionModel().getSelectedItem();
+        Integer typeId = selected == null ? null : selected.getId();
+        root.setDisable(true);
+        status.setText("Cargando aulas…");
+        Thread thread = new Thread(() -> {
             try {
-                List<Classroom> rooms=classrooms.listar();List<ClassroomType> categories=types.listar();
+                List<ClassroomType> categories = types.listar();
+                ClassroomType current = categories.stream().filter(type -> type.getId().equals(typeId))
+                        .findFirst().orElse(null);
+                List<Classroom> rooms = findClassrooms(current);
                 Platform.runLater(() -> {
-                    refreshing=true;classroomTable.setItems(FXCollections.observableArrayList(rooms));typeTable.setItems(FXCollections.observableArrayList(categories));
-                    typeFilter.getItems().clear();typeFilter.getItems().add(null);typeFilter.getItems().addAll(categories);typeFilter.setValue(null);refreshing=false;
-                    root.setDisable(false);status.setText(rooms.size()+" aulas · "+categories.size()+" tipos");
+                    refreshing = true;
+                    typeTable.getItems().setAll(categories);
+                    typeTable.getSelectionModel().clearSelection();
+                    if (current != null) {
+                        typeTable.getSelectionModel().select(current);
+                    }
+                    refreshing = false;
+                    showClassrooms(current, rooms);
                 });
-            }catch(Exception ex){Platform.runLater(() -> {root.setDisable(false);status.setText("No se pudieron cargar los datos.");error(ex);});}
-        },"consultar-aulas");thread.setDaemon(true);thread.start();
+            } catch (Exception exception) {
+                Platform.runLater(() -> loadFailed(exception));
+            }
+        }, "consultar-aulas");
+        thread.setDaemon(true);
+        thread.start();
     }
-    @FXML private void filter() {
-        if(refreshing)return;ClassroomType selected=typeFilter.getValue();root.setDisable(true);
-        Thread thread=new Thread(() -> {
-            try {List<Classroom> rooms=selected==null?classrooms.listar():classrooms.listarPorTipo(selected.getId());Platform.runLater(() -> {classroomTable.getItems().setAll(rooms);root.setDisable(false);status.setText(rooms.size()+" aulas encontradas");});}
-            catch(Exception ex){Platform.runLater(() -> {root.setDisable(false);error(ex);});}
-        },"filtrar-aulas");thread.setDaemon(true);thread.start();
+
+    @FXML private void showAllClassrooms() {
+        typeTable.getSelectionModel().clearSelection();
     }
+
+    private void loadClassrooms(ClassroomType selected) {
+        classroomTable.getItems().clear();
+        root.setDisable(true);
+        status.setText("Cargando aulas…");
+        Thread thread = new Thread(() -> {
+            try {
+                List<Classroom> rooms = findClassrooms(selected);
+                Platform.runLater(() -> showClassrooms(selected, rooms));
+            } catch (Exception exception) {
+                Platform.runLater(() -> loadFailed(exception));
+            }
+        }, "filtrar-aulas");
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private List<Classroom> findClassrooms(ClassroomType type) {
+        return type == null ? classrooms.listar() : classrooms.listarPorTipo(type.getId());
+    }
+
+    private void showClassrooms(ClassroomType type, List<Classroom> rooms) {
+        classroomTable.getSelectionModel().clearSelection();
+        classroomTable.getItems().setAll(rooms);
+        classroomScope.setText(type == null ? "Todos los tipos" : type.getName());
+        status.setText(rooms.size() + " aulas · " + typeTable.getItems().size() + " tipos");
+        root.setDisable(false);
+    }
+
+    private void loadFailed(Exception exception) {
+        root.setDisable(false);
+        status.setText("No se pudieron cargar las aulas.");
+        error(exception);
+    }
+
     @FXML private void addClassroom(){editClassroom(null);}
     @FXML private void editSelectedClassroom(){Classroom selected=classroomTable.getSelectionModel().getSelectedItem();if(selected==null){info("Seleccione un aula.");return;}editClassroom(selected);}
     private void editClassroom(Classroom selected) {
-        if(typeTable.getItems().isEmpty()){info("Agregue primero un tipo de aula en la pestaña Tipos de aula.");return;}
+        if(typeTable.getItems().isEmpty()){info("Agregue primero un tipo de aula en el panel lateral.");return;}
         String title = selected == null ? "Agregar aula" : "Editar aula";
         TextField code=new TextField(selected==null?"":selected.getCodigo());TextField capacity=new TextField(selected==null?"":selected.getCapacidad().toString());
         ComboBox<ClassroomType> type=new ComboBox<>(FXCollections.observableArrayList(typeTable.getItems()));type.setPromptText("Seleccione un tipo");type.setMaxWidth(Double.MAX_VALUE);
-        if(selected!=null)for(ClassroomType option:type.getItems())if(option.getId().equals(selected.getType().getId()))type.setValue(option);
+        ClassroomType initialType = selected == null ? typeTable.getSelectionModel().getSelectedItem() : selected.getType();
+        if (initialType != null) {
+            type.getItems().stream().filter(option -> option.getId().equals(initialType.getId()))
+                    .findFirst().ifPresent(type::setValue);
+        }
         GridPane grid=grid();grid.addRow(0,new Label("Código *"),code);grid.addRow(1,new Label("Capacidad *"),capacity);grid.addRow(2,new Label("Tipo de aula *"),type);
         Label feedback=feedback();VBox content=new VBox(16,grid,feedback);content.setPadding(new Insets(18));
         Dialogs.form(root, title, content, (pane, close) -> {

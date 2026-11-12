@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="12" styleClass="module-page">
+    <Label text="Oferta académica" styleClass="page-title"/>
+    <SplitPane dividerPositions="0.46" VBox.vgrow="ALWAYS" styleClass="module-split">
+        <fx:include source="groupe-view.fxml"/>
+        <fx:include source="subject-view.fxml"/>
+    </SplitPane>
+</VBox>

@@ -7,9 +7,9 @@ Sigue la configuración de PostgreSQL del README principal. Si tu base ya contie
 ## Probar desde JavaFX
 
 1. Inicia con `./mvnw javafx:run` o `mvnw.cmd javafx:run` en Windows.
-2. Abre **Aulas → Tipos de aula** y crea el tipo **Laboratorio**.
-3. En **Aulas → Aulas**, registra un aula con un código único, una capacidad positiva y el tipo **Laboratorio**.
-4. Filtra por **Laboratorio** y edita la capacidad. Reinicia la aplicación para comprobar que el cambio se guardó.
+2. Abre **Aulas** y crea el tipo **Laboratorio** desde el panel lateral.
+3. En el panel principal, registra un aula con un código único, una capacidad positiva y el tipo **Laboratorio**.
+4. Selecciona **Laboratorio** en la tabla lateral para filtrar las aulas y edita la capacidad. Reinicia la aplicación para comprobar que el cambio se guardó.
 5. Intenta eliminar **Laboratorio** mientras tenga un aula asociada. Reasigna o elimina el aula antes de borrar el tipo.
 6. Abre **Horarios** desde la barra superior y comprueba que el aula aparece al crear una asignación.
 

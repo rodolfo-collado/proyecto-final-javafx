@@ -28,7 +28,9 @@ Al abrir la aplicación, Hibernate prepara las tablas y ejecuta `sql/demo_seed.s
 
 La semilla agrega filas de ejemplo que falten y conserva los registros existentes. Abre **Horarios** desde la barra superior y selecciona **Demo · Semana académica** para probar el filtro por grupo.
 
-En **Aulas**, crea primero un tipo de aula y luego registra un aula con ese tipo. En **Horarios**, el aula aparecerá entre las opciones de una asignación.
+En **Oferta académica**, administra grupos y asignaturas en dos tablas de una misma ventana. Los botones de alta y edición abren sus formularios dentro del escritorio MDI.
+
+En **Aulas**, crea primero un tipo en el panel lateral y luego registra un aula con ese tipo. Selecciona una fila de **Tipos de aula** para filtrar la tabla principal o pulsa **Todos los tipos** para quitar el filtro. En **Horarios**, el aula aparecerá entre las opciones de una asignación.
 
 En **Docentes y disponibilidad**, pulsa **Nuevo docente** o selecciona una fila y pulsa **Editar**. El formulario se abre en una ventana interna con su propia entrada en la barra de tareas. Al seleccionar un docente, el panel lateral muestra sus bloques.
 

@@ -3,6 +3,7 @@ package com.practice.aulaequilibrio.controller;
 import com.practice.aulaequilibrio.model.Subject;
 import com.practice.aulaequilibrio.service.SubjectService;
 import com.practice.aulaequilibrio.util.Dialogs;
+import com.practice.aulaequilibrio.util.ErrorMessages;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -13,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
 public class SubjectController {
 
@@ -25,18 +27,9 @@ public class SubjectController {
     @FXML
     private TableColumn<Subject, Integer> sesionesColumn;
     @FXML
-    private TextField codigoField;
-    @FXML
-    private TextField nombreField;
-    @FXML
-    private TextField sesionesField;
-    @FXML
-    private Label formTitle;
-    @FXML
-    private Button deleteButton;
+    private Button editButton, deleteButton;
 
     private final SubjectService service = new SubjectService();
-    private Integer editingId;
 
     @FXML
     private void initialize() {
@@ -44,7 +37,10 @@ public class SubjectController {
         nombreColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getNombre()));
         sesionesColumn.setCellValueFactory(cell ->
                 new SimpleObjectProperty<>(cell.getValue().getSesionesRequeridas()));
-        table.getSelectionModel().selectedItemProperty().addListener((obs, old, selected) -> fillForm(selected));
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        var noSelection = table.getSelectionModel().selectedItemProperty().isNull();
+        editButton.disableProperty().bind(noSelection);
+        deleteButton.disableProperty().bind(noSelection);
         Platform.runLater(this::refresh);
     }
 
@@ -55,28 +51,45 @@ public class SubjectController {
         } catch (RuntimeException exception) {
             Dialogs.error(table, "No se pudieron cargar las asignaturas", exception);
         }
-        clearForm();
-    }
-
-    @FXML
-    private void clearForm() {
         table.getSelectionModel().clearSelection();
-        fillForm(null);
     }
 
     @FXML
-    private void save() {
-        boolean creating = editingId == null;
-        try {
-            Subject saved = service.save(
-                    editingId, codigoField.getText(), nombreField.getText(), sesionesField.getText());
+    private void create() {
+        openForm(null);
+    }
+
+    @FXML
+    private void edit() {
+        Subject selected = table.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            openForm(selected);
+        }
+    }
+
+    private void openForm(Subject selected) {
+        TextField codigo = new TextField(selected == null ? "" : selected.getCodigo());
+        codigo.setPromptText("Ej. MAT101");
+        TextField nombre = new TextField(selected == null ? "" : selected.getNombre());
+        nombre.setPromptText("Ej. Matemática I");
+        TextField sesiones = new TextField(selected == null ? "" : selected.getSesionesRequeridas().toString());
+        sesiones.setPromptText("Mayor que cero");
+        Label feedback = new Label();
+        feedback.setWrapText(true);
+        feedback.getStyleClass().add("field-error");
+        VBox form = new VBox(8, new Label("Código *"), codigo, new Label("Nombre *"), nombre, new Label("Sesiones requeridas *"), sesiones, feedback);
+        Dialogs.form(table, selected == null ? "Nueva asignatura" : "Editar asignatura", form, (pane, close) -> {
+            Subject saved;
+            try {
+                saved = service.save(selected == null ? null : selected.getId(), codigo.getText(), nombre.getText(), sesiones.getText());
+            } catch (RuntimeException exception) {
+                feedback.setText(ErrorMessages.forUser(exception));
+                return;
+            }
+            close.run();
             refresh();
             selectById(saved.getId());
-            Dialogs.info(table, "Asignaturas",
-                    creating ? "Asignatura creada correctamente." : "Asignatura actualizada correctamente.");
-        } catch (RuntimeException exception) {
-            Dialogs.error(table, "No se pudo guardar la asignatura", exception);
-        }
+        });
     }
 
     @FXML
@@ -95,15 +108,6 @@ public class SubjectController {
                 refresh();
             }
         });
-    }
-
-    private void fillForm(Subject subject) {
-        editingId = subject == null ? null : subject.getId();
-        codigoField.setText(subject == null ? "" : subject.getCodigo());
-        nombreField.setText(subject == null ? "" : subject.getNombre());
-        sesionesField.setText(subject == null ? "" : String.valueOf(subject.getSesionesRequeridas()));
-        formTitle.setText(subject == null ? "Nueva asignatura" : "Editar asignatura");
-        deleteButton.setDisable(subject == null);
     }
 
     private void selectById(Integer id) {

@@ -13,8 +13,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
@@ -52,10 +53,10 @@ public class ScheduleView extends BorderPane {
         newVersion.getStyleClass().add("primary");
         editVersion.disableProperty().bind(versions.valueProperty().isNull());
         deleteVersion.disableProperty().bind(versions.valueProperty().isNull());
-        HBox versionBar = new HBox(8, new Label("Versión"), versions,
+        FlowPane versionBar = new FlowPane(8, 6, new Label("Versión"), versions,
                 newVersion, editVersion, deleteVersion);
         versionBar.setAlignment(Pos.CENTER_LEFT);
-        HBox filterBar = new HBox(8, new Label("Grupo"), groups,
+        FlowPane filterBar = new FlowPane(8, 6, new Label("Grupo"), groups,
                 button("Actualizar", () -> reload(selectedVersionId())));
         filterBar.setAlignment(Pos.CENTER_LEFT);
         Label title = new Label("Horarios");
@@ -72,8 +73,6 @@ public class ScheduleView extends BorderPane {
         table.getColumns().add(column("Aula", a -> a.getClassroom().getCodigo()));
         table.setPlaceholder(new Label("No hay asignaciones para esta selección."));
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
-        setMargin(table, new Insets(12, 0, 12, 0));
-        setCenter(table);
 
         Button add = button("Nueva asignación", () -> assignmentDialog(null));
         Button edit = button("Editar asignación", () -> assignmentDialog(table.getSelectionModel().getSelectedItem()));
@@ -83,8 +82,18 @@ public class ScheduleView extends BorderPane {
         add.disableProperty().bind(versions.valueProperty().isNull());
         edit.disableProperty().bind(table.getSelectionModel().selectedItemProperty().isNull());
         delete.disableProperty().bind(table.getSelectionModel().selectedItemProperty().isNull());
+        Label assignmentsTitle = new Label("Asignaciones");
+        assignmentsTitle.getStyleClass().add("card-title");
+        VBox assignments = new VBox(10, assignmentsTitle, new FlowPane(8, 6, add, edit, delete), table);
+        assignments.getStyleClass().add("panel");
+        VBox.setVgrow(table, Priority.ALWAYS);
+        setMargin(assignments, new Insets(12, 0, 0, 0));
+        setCenter(assignments);
+
         message.setWrapText(true);
-        setBottom(new VBox(10, new HBox(8, add, edit, delete), message));
+        message.getStyleClass().add("muted");
+        setMargin(message, new Insets(8, 0, 0, 0));
+        setBottom(message);
 
         versions.setOnAction(event -> refreshAssignments());
         groups.setOnAction(event -> refreshAssignments());

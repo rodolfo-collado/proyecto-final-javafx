@@ -27,9 +27,8 @@
                 <Button text="Horarios" onAction="#openSchedules"/>
                 <Button text="Docentes y disponibilidad" accessibleText="Docentes y disponibilidad"
                         userData="catalog-view.fxml" onAction="#openCatalog"/>
-                <Button text="Grupos" accessibleText="Grupos" userData="groupe-view.fxml" onAction="#openCatalog"/>
-                <Button text="Asignaturas" accessibleText="Asignaturas" userData="subject-view.fxml"
-                        onAction="#openCatalog"/>
+                <Button text="Oferta académica" accessibleText="Oferta académica"
+                        userData="academic-offer-view.fxml" onAction="#openCatalog"/>
                 <Button text="Aulas" accessibleText="Aulas" userData="classroom-view.fxml" onAction="#openCatalog"/>
                 <MenuButton text="Ventanas">
                     <items>
@@ -60,26 +59,17 @@
                         </VBox>
                     </graphic>
                 </Button>
-                <Button onAction="#openCatalog" userData="groupe-view.fxml" accessibleText="Grupos" maxWidth="Infinity"
+                <Button onAction="#openCatalog" userData="academic-offer-view.fxml" accessibleText="Oferta académica" maxWidth="Infinity"
                         HBox.hgrow="ALWAYS" styleClass="catalog-link">
                     <graphic>
                         <VBox spacing="5">
-                            <Label text="Grupos" styleClass="card-title"/>
-                            <Label text="Registra grupos y cantidad de estudiantes." styleClass="muted"/>
+                            <Label text="Oferta académica" styleClass="card-title"/>
+                            <Label text="Administra grupos y asignaturas en una sola ventana." styleClass="muted"/>
                         </VBox>
                     </graphic>
                 </Button>
             </HBox>
             <HBox spacing="14">
-                <Button onAction="#openCatalog" userData="subject-view.fxml" accessibleText="Asignaturas" maxWidth="Infinity"
-                        HBox.hgrow="ALWAYS" styleClass="catalog-link">
-                    <graphic>
-                        <VBox spacing="5">
-                            <Label text="Asignaturas" styleClass="card-title"/>
-                            <Label text="Gestiona códigos y sesiones requeridas." styleClass="muted"/>
-                        </VBox>
-                    </graphic>
-                </Button>
                 <Button onAction="#openCatalog" userData="classroom-view.fxml" accessibleText="Aulas" maxWidth="Infinity"
                         HBox.hgrow="ALWAYS" styleClass="catalog-link">
                     <graphic>

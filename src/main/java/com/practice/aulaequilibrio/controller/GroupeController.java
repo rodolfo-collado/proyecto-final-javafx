@@ -3,6 +3,7 @@ package com.practice.aulaequilibrio.controller;
 import com.practice.aulaequilibrio.model.Groupe;
 import com.practice.aulaequilibrio.service.GroupeService;
 import com.practice.aulaequilibrio.util.Dialogs;
+import com.practice.aulaequilibrio.util.ErrorMessages;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -13,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
 public class GroupeController {
 
@@ -23,23 +25,19 @@ public class GroupeController {
     @FXML
     private TableColumn<Groupe, Integer> cantidadColumn;
     @FXML
-    private TextField nombreField;
-    @FXML
-    private TextField cantidadField;
-    @FXML
-    private Label formTitle;
-    @FXML
-    private Button deleteButton;
+    private Button editButton, deleteButton;
 
     private final GroupeService service = new GroupeService();
-    private Integer editingId;
 
     @FXML
     private void initialize() {
         nombreColumn.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getNombre()));
         cantidadColumn.setCellValueFactory(cell ->
                 new SimpleObjectProperty<>(cell.getValue().getCantidadEstudiantes()));
-        table.getSelectionModel().selectedItemProperty().addListener((obs, old, selected) -> fillForm(selected));
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        var noSelection = table.getSelectionModel().selectedItemProperty().isNull();
+        editButton.disableProperty().bind(noSelection);
+        deleteButton.disableProperty().bind(noSelection);
         Platform.runLater(this::refresh);
     }
 
@@ -50,26 +48,43 @@ public class GroupeController {
         } catch (RuntimeException exception) {
             Dialogs.error(table, "No se pudieron cargar los grupos", exception);
         }
-        clearForm();
-    }
-
-    @FXML
-    private void clearForm() {
         table.getSelectionModel().clearSelection();
-        fillForm(null);
     }
 
     @FXML
-    private void save() {
-        boolean creating = editingId == null;
-        try {
-            Groupe saved = service.save(editingId, nombreField.getText(), cantidadField.getText());
+    private void create() {
+        openForm(null);
+    }
+
+    @FXML
+    private void edit() {
+        Groupe selected = table.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            openForm(selected);
+        }
+    }
+
+    private void openForm(Groupe selected) {
+        TextField nombre = new TextField(selected == null ? "" : selected.getNombre());
+        nombre.setPromptText("Ej. 1A");
+        TextField cantidad = new TextField(selected == null ? "" : selected.getCantidadEstudiantes().toString());
+        cantidad.setPromptText("Mayor que cero");
+        Label feedback = new Label();
+        feedback.setWrapText(true);
+        feedback.getStyleClass().add("field-error");
+        VBox form = new VBox(8, new Label("Nombre *"), nombre, new Label("Cantidad de estudiantes *"), cantidad, feedback);
+        Dialogs.form(table, selected == null ? "Nuevo grupo" : "Editar grupo", form, (pane, close) -> {
+            Groupe saved;
+            try {
+                saved = service.save(selected == null ? null : selected.getId(), nombre.getText(), cantidad.getText());
+            } catch (RuntimeException exception) {
+                feedback.setText(ErrorMessages.forUser(exception));
+                return;
+            }
+            close.run();
             refresh();
             selectById(saved.getId());
-            Dialogs.info(table, "Grupos", creating ? "Grupo creado correctamente." : "Grupo actualizado correctamente.");
-        } catch (RuntimeException exception) {
-            Dialogs.error(table, "No se pudo guardar el grupo", exception);
-        }
+        });
     }
 
     @FXML
@@ -87,14 +102,6 @@ public class GroupeController {
                 refresh();
             }
         });
-    }
-
-    private void fillForm(Groupe groupe) {
-        editingId = groupe == null ? null : groupe.getId();
-        nombreField.setText(groupe == null ? "" : groupe.getNombre());
-        cantidadField.setText(groupe == null ? "" : String.valueOf(groupe.getCantidadEstudiantes()));
-        formTitle.setText(groupe == null ? "Nuevo grupo" : "Editar grupo");
-        deleteButton.setDisable(groupe == null);
     }
 
     private void selectById(Integer id) {
